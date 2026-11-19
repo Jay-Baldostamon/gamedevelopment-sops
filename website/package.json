@@ -1,0 +1,14 @@
+{
+  "name": "gamedevelopment-sops-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "marked": "^18.1.2"
+  }
+}

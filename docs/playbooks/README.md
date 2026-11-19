@@ -44,7 +44,7 @@ Use these first when the workflow is tied to a named tool, repository pattern, o
 | [Backend L3 - Senior Engineer](../career-ladder/backend/L3%20-%20Senior%20Engineer.md) | [L3 - Senior Engineer](#l3---senior-engineer) |
 | [Backend L4 - Staff Engineer](../career-ladder/backend/Individual%20Contributor/L4%20-%20Staff%20Engineer.md) / [Backend L4 - Engineering Manager](../career-ladder/backend/Engineering%20Manager/L4%20-%20Engineering%20Manager.md) | [L4 - Staff / Engineering Manager](#l4---staff--engineering-manager) |
 | [Backend L5 - Principal Engineer](../career-ladder/backend/Individual%20Contributor/L5%20-%20Principal%20Engineer.md) / [Backend L5 - Director of Engineering](../career-ladder/backend/Engineering%20Manager/L5%20-%20Director%20of%20Engineering.md) | [L5 - Principal / Director](#l5---principal--director) |
-| [Backend L6 - Chief Architect](../career-ladder/backend/Individual%20Contributor/L6%20-%20Chieft%20Architect.md) / [Backend L6 - Head of Engineering](../career-ladder/backend/Engineering%20Manager/L6%20-%20Head%20of%20Engineering.md) | [L6 - Org-level Leadership](#l6---org-level-leadership) |
+| [Backend L6 - Chief Architect](../career-ladder/backend/Individual%20Contributor/L6%20-%20Chief%20Architect.md) / [Backend L6 - Head of Engineering](../career-ladder/backend/Engineering%20Manager/L6%20-%20Head%20of%20Engineering.md) | [L6 - Org-level Leadership](#l6---org-level-leadership) |
 
 ---
 
