@@ -34,17 +34,16 @@ Use this repo for any game development documentation that should be kept current
 - `archive/` - retired playbooks kept for historical reference
 - `schemas/` - structured document schemas for blueprints, career ladders, playbooks, and issue templates
 - `scripts/` - helper automation such as worktree provisioning
-- `website/` - static site generator and GitHub Pages deployment for the documentation and training tracker
 - `resources/images/` - screenshots and figures referenced by the documents
 
 ## Website
 
-The documentation and the Level 1 training tracker are published together as a static site at **https://jay-baldostamon.github.io/gamedevelopment-sops/**.
+The published site is the Level 1 training tracker: **https://jay-baldostamon.github.io/gamedevelopment-sops/**.
 
-- Every Markdown document in `docs/`, `schemas/`, `archive/`, and the repository README is rendered with navigation, section landing pages, and client-side search.
-- The training tracker is built from `docs/blueprints/training/artificial-intelligence/app` and served at `/tracker/`.
-- Pushing to `main` runs `.github/workflows/pages.yml`, which tests both projects, builds the site, and deploys it to GitHub Pages.
-- See [`website/README.md`](website/README.md) for local build commands and deployment prerequisites.
+- The tracker is built from `docs/blueprints/training/artificial-intelligence/app` and served at the site root.
+- Pushing to `main` runs `.github/workflows/pages.yml`, which tests, lints, builds, and deploys the tracker to GitHub Pages.
+- The documentation remains versioned Markdown in this repository; it is not part of the published site.
+- Local validation: `cd docs/blueprints/training/artificial-intelligence/app`, then `npm ci`, `npm test`, `npm run lint`, and `npm run build`.
 
 ## Why GitHub Instead of Google Docs
 

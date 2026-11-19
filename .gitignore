@@ -2,7 +2,6 @@
 node_modules/
 dist/
 dist-ssr/
-_site/
 *.local
 
 # Logs
