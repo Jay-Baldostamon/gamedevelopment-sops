@@ -1,0 +1,129 @@
+{
+  "team_slug": "engineering",
+  "project_url": "https://github.com/orgs/hurdman/projects/20",
+  "members": {
+    "arone-titong": {
+      "supervisor": "patvillaruzhurdman",
+      "current_day": 4,
+      "status": "in_progress",
+      "last_issue": 165
+    },
+    "MarkCuizon02": {
+      "supervisor": "patvillaruzhurdman",
+      "current_day": 3,
+      "status": "in_progress",
+      "last_issue": 101
+    },
+    "johnhurdman": {
+      "supervisor": "ej282000",
+      "current_day": 6,
+      "status": "in_progress",
+      "last_issue": 166
+    },
+    "ramil-001": {
+      "supervisor": "jeremyhurdman24",
+      "current_day": 6,
+      "status": "in_progress",
+      "last_issue": 174
+    },
+    "eliHurdman": {
+      "supervisor": "alanoutrank",
+      "current_day": 3,
+      "status": "in_progress",
+      "last_issue": 167
+    },
+    "kennethhurdman": {
+      "supervisor": "patvillaruzhurdman",
+      "current_day": 4,
+      "status": "in_progress",
+      "last_issue": 168
+    },
+    "marcelhurdman": {
+      "supervisor": "patvillaruzhurdman",
+      "current_day": 3,
+      "status": "in_progress",
+      "last_issue": 103
+    },
+    "CJ-hurdman": {
+      "supervisor": "ej282000",
+      "current_day": 5,
+      "status": "in_progress",
+      "last_issue": 169
+    },
+    "jl-hurdman": {
+      "supervisor": "ej282000",
+      "current_day": 6,
+      "status": "in_progress",
+      "last_issue": 170
+    },
+    "HansHaroldFlores": {
+      "supervisor": "alanoutrank",
+      "current_day": 4,
+      "status": "in_progress",
+      "last_issue": 92
+    },
+    "gelson-ai": {
+      "supervisor": "jeremyhurdman24",
+      "current_day": 5,
+      "status": "in_progress",
+      "last_issue": 153
+    },
+    "maevic-mysql": {
+      "supervisor": "alexdlsjr",
+      "current_day": 4,
+      "status": "in_progress",
+      "last_issue": 171,
+      "discipline": "data science"
+    },
+    "jc3drick": {
+      "supervisor": "alexdlsjr",
+      "current_day": 3,
+      "status": "in_progress",
+      "last_issue": 156,
+      "discipline": "data science"
+    },
+    "ercsntshurdman": {
+      "supervisor": "alanoutrank",
+      "current_day": 4,
+      "status": "in_progress",
+      "last_issue": 93
+    },
+    "alexdlsjr": {
+      "supervisor": "alanoutrank",
+      "current_day": 20,
+      "status": "completed_program",
+      "last_issue": 157,
+      "discipline": "data science"
+    },
+    "ej282000": {
+      "supervisor": "alanoutrank",
+      "current_day": 13,
+      "status": "in_progress",
+      "last_issue": 136
+    },
+    "JeremyHurdman24": {
+      "supervisor": "alanoutrank",
+      "current_day": 18,
+      "status": "in_progress",
+      "last_issue": 172
+    },
+    "patvillaruzhurdman": {
+      "supervisor": "alanoutrank",
+      "current_day": 16,
+      "status": "in_progress",
+      "last_issue": 173
+    },
+    "Jay-Baldostamon": {
+      "supervisor": "alanoutrank",
+      "current_day": 4,
+      "status": "in_progress",
+      "last_issue": 139
+    },
+    "son-hurdman": {
+      "supervisor": "alanoutrank",
+      "current_day": 2,
+      "status": "in_progress",
+      "last_issue": 129
+    }
+  }
+}
