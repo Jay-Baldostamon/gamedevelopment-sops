@@ -726,75 +726,1005 @@ Milestone this week: **Beta** (Day 18) and **v1.0** (Day 20) — content complet
 
 ## Level 2 — Controlled AI-assisted delivery (Days 21–40)
 
-Level 2 adds the Hermes agent and the authenticated GitHub CLI to the tools above. Progress from learning review skills to handoff generation, authorized issue-to-PR delivery, and a final locally verified task. Issue requirements remain authoritative; AI review never replaces independent human review or CI.
+Level 2 adds the local Hermes agent and the authenticated GitHub CLI to the tools above. You work on the game you shipped on Day 20: the game repository is the assigned repository, and its post-launch issues are the authoritative tasks. Every day gives one copyable prompt; the prompt is the exercise, and the evidence is what the run actually produced.
+
+L2 moves from controlled review, to handoff, to authorized delivery, to a full task-to-reviewed-PR run. Across all four weeks the issue body stays authoritative, AI review never replaces human review or CI, and no workflow merges, self-approves, or hides a blocked check. **L2 exits on Day 40** when the capstone packet exists and names the one human decision still required.
+
+### Entry expectations and safety rules
+
+L2 assumes you finished L1 and can run, debug, and explain your own game. It teaches control of agent workflows, not game development.
+
+**Pre-flight (finish before Day 21).** Do not start Day 21 with an item below unchecked.
+
+- Day 20 passed: `v1.0` is released and the post-launch issues exist in the game repository.
+- The game repository is private and your GitHub account can read its issues, pull requests, branches, and check results.
+- The GitHub CLI (`gh`) is installed and signed in as you. You complete every sign-in yourself.
+- At least one post-launch issue has explicit requirements and acceptance criteria. If every issue is vague, rewrite one before Day 26; L2 never invents the missing requirements later.
+- The pinned Unity version opens the game project, and a second folder or Git worktree is available for reviewing a PR branch without mixing branches in one project.
+- Hermes is available to install from its current official documentation.
+- A screen recorder is ready for Unity validation evidence.
+
+**Authority and scope.**
+
+- The issue body is authoritative for requirements, scope, and acceptance criteria. A handoff, plan, or AI suggestion never overrides it.
+- One authorized task at a time. Do not create, split, or edit issues during an L2 exercise unless the day says so.
+- Do not write game code on Days 21–24 or 26–30. The only write path before delivery is the Day 25 gap-resolve remediation, limited to a verified acceptance-criteria gap on an authorized branch.
+- Weeks 5–7 use your own post-launch issues. The Week 8 task must be authored by someone else — your producer, Scrum Master, or training lead — so its requirements are independent of you.
+- Already-delivered or overlapping work is reported, never re-planned.
+
+**Safety boundary (every day).** Never merge a pull request, approve your own work, bypass or disable CI, edit an issue body, change repository permissions, change CI configuration, or expose a secret. If a sign-in or credential prompt appears, complete it yourself. Never paste passwords, tokens, cookies, private keys, or personal data into a prompt, comment, or commit.
+
+**Evidence standard.** Each day ends with the stated output: a local evidence note, a comment URL, a PR URL, a commit, a check result, or a Play Mode recording. "The AI said it passed" is not evidence. Report blocked checks as blocked. A reviewer must be able to reach the same conclusion from the evidence alone.
+
+**Unity validation rule.** A change counts as validated only when someone opened the affected branch in the pinned Unity version, played the changed behavior, and read the Console. Record the steps, the observed result, and a screenshot or GIF with the PR or comment the day names.
+
+**Roles.** The final decision on delivered work belongs to a human reviewer. Where a day says EM, use the assigned Engineering Manager; if you are the EM, another EM performs the final review.
+
+### Interaction modes
+
+Each L2 exercise runs in one named mode. The mode is a per-run instruction in the prompt; it never edits, reinstalls, or replaces an installed skill.
+
+| Mode | What the agent may do | What it must not do |
+| --- | --- | --- |
+| Interactive | One checkpoint at a time, with explicit approval before each next step | Continue without approval |
+| Inform-only | Inspect, validate read-only, and report | Change files, commit, push, submit a review, merge |
+| Gap-resolve | Fix only verified acceptance-criteria gaps on an explicitly authorized branch, validate, commit, and push the minimal remediation | Refactor, add unverified changes, or act when no gap exists |
+| Echo | Produce the complete draft or delivery artifact for you to inspect and post or keep | Post, submit, or merge without separate authorization |
+| Auto-post / auto-review | Post exactly one non-duplicate handoff, or run the prescribed review, for an explicitly authorized task | Duplicate a comment, submit an approval, or merge |
+| Recommend-only | Read and recommend the correctly routed next action and its exact prompt | Run that action |
+
+### AI collaboration habit for L2
+
+Reuse one prompt contract, omitting fields that do not apply:
+
+```text
+Goal: the one outcome for this run.
+Context: game repository folder, issue or PR, base branch, and the Unity behavior at stake.
+Boundary: the mode, what may change, and the explicit never-list.
+Check: the Unity validation that must be run and reported, with real results.
+Report: the exact headings, requirements coverage, findings, blockers, and next human action.
+```
+
+Repeat the placeholders back before acting. If any value still contains a `YOUR-` placeholder or is unclear, stop and ask. Ask for missing facts instead of guessing a file, scene, API, or requirement.
 
 ### Week 5 — Hermes review setup and practice
 
+Milestone this week: **Review-ready setup** (Day 25 gate) — Hermes launches without help, least-privilege review access is confirmed, both review skills load in a fresh session, and the three review modes are practiced on real game-repository pull requests.
+
 #### Day 21 — Hermes setup
-Install Hermes using current official guidance, launch it, and record a reliable way to reopen it. Complete any sign-in yourself. **Output:** a verified local setup or a clearly stated blocker.
+**Objective:** Install Hermes locally, launch its desktop UI, and keep a reliable way to reopen it.
+
+**Preparation:** Day 20 passed, the game project opens in the pinned Unity version, official Hermes documentation reachable, and a `Day 21` evidence folder created.
+
+##### Phase 1 — Install from current guidance
+1. Replace `YOUR-OS` and `YOUR-GAME-REPO-FOLDER`, then send the prompt below.
+2. Require the agent to repeat both values and stop on a placeholder.
+3. Read the numbered steps before running them, and note every step that downloads software or changes the machine.
+
+##### Phase 2 — Finish setup yourself
+1. Complete any sign-in or credential prompt yourself, and pause the agent while you do.
+2. Never paste a token, key, or password into the chat, the issue, or the prompt.
+
+##### Phase 3 — Verify and record
+1. Launch the UI, confirm it opened, close it, and reopen it once from the operating system's launcher.
+2. Record the installed version, the exact launch command or launcher, and any blocker in the `Day 21` folder.
+
+##### Copyable prompt
+```text
+Operating System: YOUR-OS
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+
+Install and verify Hermes Agent locally using current official Hermes documentation. Do not assume older install commands are still correct.
+
+Before doing anything, repeat the operating system and repository folder back to me. If either value still contains a YOUR- placeholder, stop and ask me to replace it.
+
+Then:
+1. State the official installation path for my operating system and give the exact steps as a short numbered list. Warn me before any step that downloads software or changes this machine.
+2. Help me complete the installation. If a sign-in or credential prompt appears, pause and tell me to complete it myself. Never ask me to paste, reveal, store in source control, or log passwords, API keys, tokens, or other secrets.
+3. Launch the Hermes desktop UI with `hermes desktop` and tell me how to confirm it opened. If a documented desktop-only installation makes that command unavailable, use the installed application launcher and report that blocker instead of substituting another command.
+4. Return a "Successful local setup" summary with the installed version, the exact non-secret launch command or the verified launcher, how to launch it again from my operating system, and any prerequisite or permission that still needs my action.
+
+Limit the work to installing and verifying Hermes. Do not modify repositories, shell profiles, global development configuration, or unrelated software.
+```
+
+**Deliverables:** the local install, a launch record, and the blocker note.
+- [ ] Hermes is installed locally from the current official guidance.
+- [ ] I completed every sign-in or credential prompt myself.
+- [ ] The Hermes desktop UI opened.
+- [ ] I reopened it once from the operating system launcher.
+- [ ] The launch command or launcher and the installed version are recorded.
+- [ ] Any blocker is written down as the exact failing step.
 
 #### Day 22 — Review access and skills
-Verify least-privilege access to an assigned repository and install the baseline and internal review skills. Confirm both load in a fresh Hermes session. **Output:** access and skill readiness results.
+**Objective:** Verify least-privilege review access to the game repository and install both review skills.
+
+**Preparation:** Day 21 passed, `gh` signed in, the game repository private, and at least one pull request available to review on Days 23–25. Do not review it today.
+
+##### Phase 1 — Verify access
+1. Replace the placeholders and send the prompt below.
+2. Confirm read access to pull-request metadata and diffs, linked issues, source and branches, and check results.
+3. Prefer read-only repository, pull-request, issue, and checks access. Do not request write, merge, administration, workflow, or organization-wide access.
+
+##### Phase 2 — Install both skills
+1. Confirm the public `github-code-review` skill is available, and install it only through the supported Hermes skills command.
+2. Install `engineering-sops-pr-review` from `.github/skills/engineering-sops-pr-review/SKILL.md` in `hurdman/engineering-sops`, branch `main`, using authenticated `gh api` rather than a raw URL.
+3. Validate YAML frontmatter, the exact skill name, and a non-empty body before calling it installed.
+
+##### Phase 3 — Prove a fresh session loads them
+1. Open a fresh Hermes session and load both skills.
+2. Record the access result, both skill locations, the fresh-session result, and any escalation blocker.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Game Repository: YOUR-GITHUB-REPOSITORY
+
+Prepare my existing local Hermes installation for automated pull-request reviews of my Unity game repository. Use current official Hermes documentation and my existing local GitHub configuration as the source of truth. This is access and skill setup only: do not review a pull request, change repository code, push commits, merge anything, change CI settings, or create a separate Hermes profile.
+
+First, repeat the repository folder and GitHub repository. If either value still contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Then:
+1. Inspect the existing local GitHub login and the repository remote without printing credentials. Confirm whether the current access can read pull-request metadata and diffs, linked issues, repository source and branches, and check or CI status.
+2. Identify the least-privilege access a reviewer needs: read-only repository access plus read-only pull-request, issue, and checks access. Do not request write, merge, administration, workflow, or broad organization access unless a specific review requirement cannot be met without it.
+3. If required read access is missing, state the exact repository or organization permission needed, why it is needed, and one concise escalation message. Pause while I complete interactive sign-in or obtain administrator approval. Never ask me to paste, print, or log secrets.
+4. Verify the resulting access with safe read-only checks and report the real results.
+5. Inspect whether the public `github-code-review` skill is available. If it is missing, install it through the supported Hermes skills command or approved skill source. Do not invent a skill URL or use an unapproved source.
+6. Install `engineering-sops-pr-review` using authenticated `gh api` from `hurdman/engineering-sops`, branch `main`, file `.github/skills/engineering-sops-pr-review/SKILL.md`. Save it as `engineering-sops-pr-review/SKILL.md` in the Hermes skills directory derived from current configuration; do not hard-code a path or edit Hermes configuration directly.
+7. Validate that the file starts with YAML frontmatter, has `name: engineering-sops-pr-review`, and has a non-empty body.
+8. Start a fresh Hermes session and verify that both `github-code-review` and `engineering-sops-pr-review` are available and load.
+9. Return a "Review access and skills readiness" summary: account and repository verified, review-relevant access confirmed, any extra access requested with its reason, safe checks and their real results, installed skill names and locations, the fresh-session load result, and remaining blockers.
+
+Keep secret redaction and normal command approvals enabled. Limit the work to read-only access validation and installing the two review skills.
+```
+
+**Deliverables:** the access result, both installed skills, and the fresh-session proof.
+- [ ] The GitHub account and game repository are verified without printing credentials.
+- [ ] Review-relevant read access is confirmed, or a specific least-privilege blocker is reported.
+- [ ] `github-code-review` is installed and its location recorded.
+- [ ] `engineering-sops-pr-review` is installed from `gh api` with valid frontmatter and a non-empty body.
+- [ ] A fresh Hermes session loads both skills.
+- [ ] No review was performed and no repository state changed.
 
 #### Day 23 — Interactive review
-Review one assigned PR step by step, verifying findings against requirements, the diff, and available Unity evidence. Get approval at each checkpoint. **Output:** an evidence-based review and findings decision.
+**Objective:** Review one game-repository pull request step by step, with approval at every checkpoint and evidence verified in Unity.
+
+**Preparation:** Day 22 passed, a pull request that changes C# and a scene or prefab, the PR branch fetchable into a second folder or worktree, the pinned Unity version, and a recorder.
+
+##### Phase 1 — Run the checkpoints
+1. Replace the placeholders and send the prompt below.
+2. Complete each checkpoint only after the previous one is approved: preflight, PR context, requirements baseline, diff review, validation, findings, verdict.
+3. Do not accept "looks fine" as a validated checkpoint; require the real result.
+
+##### Phase 2 — Validate in Unity
+1. Open the PR branch in a second project folder or worktree, never mixed with the main branch.
+2. Play the affected behavior, read the Console, and capture a GIF of the result.
+3. If the check cannot run, record the exact reason; do not substitute a code-reading opinion.
+
+##### Phase 3 — Decide findings
+1. Keep only findings grounded in a linked requirement, the diff, or the validation output.
+2. Separate blocking gaps from suggestions, and state the verdict with its evidence.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+Pull Request: YOUR-PR-NUMBER-OR-URL
+
+Use my normal local Hermes setup and the review access and skills prepared on Day 22 to perform ONE interactive, evidence-based review of my Unity game repository.
+
+This is a one-time training interaction override only. Do not modify, reinstall, patch, update, replace, or save changes to `github-code-review` or `engineering-sops-pr-review`. For this review only, follow their normal rules but pause after every step and ask me to approve the next step.
+
+First, repeat the repository folder and pull request. If either value still contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Use these checkpoints in order. Complete only the current checkpoint, show its real result, then ask "Approve the next step?" and wait for explicit approval.
+
+1. Skill and repository preflight: confirm both skills load, identify the repository from its remote, and state the mode selected by `engineering-sops-pr-review`. Stop with the exact blocker if a skill is unavailable or the repository is unclassified.
+2. PR context: title, description, author, actual base branch, head branch, linked issues, changed files, and current checks. Do not assume the base branch is `main`.
+3. Requirements baseline: read every linked issue and extract its explicit requirements and acceptance criteria. State anything missing, vague, or unavailable; never invent a requirement.
+4. Diff and code review: read the complete diff and surrounding scripts. Check C# correctness, Unity lifecycle use (`Awake`/`Start`, `Update`, `FixedUpdate`), serialized-field wiring, scene and prefab changes, input and collision regressions, performance, error handling, documentation, and evidence quality.
+5. Unity validation plan: propose the exact checks — open the PR branch in the pinned Unity version, play the affected behavior, confirm zero red Console errors, capture a screenshot or GIF — and wait for approval before running them. Report the real result.
+6. Findings and permitted remediation: report only findings grounded in a requirement, the source, the diff, or the validation output. Do not change files unless this repository is routed to gap-resolve and I separately approve a minimal fix.
+7. Verdict and review text: state Approve, Request Changes, or Comment with its evidence, and draft the GitHub review text without submitting it.
+
+Never merge, alter CI settings, change repository permissions, or expose secrets. Human review and CI remain required before merge.
+```
+
+**Deliverables:** the checkpoint log, requirements coverage, the Unity validation record, verified findings, the verdict, and the draft review text.
+- [ ] Every checkpoint was approved explicitly before the next one started.
+- [ ] The real base branch, head branch, linked issues, and checks are recorded.
+- [ ] Requirements and acceptance criteria come from the linked issue, with gaps stated instead of invented.
+- [ ] The diff was reviewed for C#, scene, and prefab behavior.
+- [ ] Unity Play Mode validation ran on the PR branch and its real result is recorded.
+- [ ] Every finding names its requirement, location, impact, and fix direction.
+- [ ] The verdict is stated with evidence.
+- [ ] No review was submitted and nothing was merged or changed in repository settings.
 
 #### Day 24 — Inform-only review
-Run an automated read-only review. Do not alter the worktree, submit a review, commit, push, or merge. **Output:** verified findings and actual validation results.
+**Objective:** Run one fully automated read-only review and verify its findings against real Unity evidence.
+
+**Preparation:** Day 23 complete, a pull request available, and a second project folder or worktree for the branch. Decide before starting that this run may not change anything.
+
+##### Phase 1 — Run the read-only review
+1. Replace the placeholders and send the prompt below.
+2. Confirm the agent states the normal repository mode and the inform-only override.
+3. Do not answer intermediate questions; the run must return one final report.
+
+##### Phase 2 — Verify before believing
+1. Re-run or inspect each blocking finding yourself: the requirement it names, the file and line, and the Unity behavior.
+2. Delete any finding you cannot reproduce or ground in the issue, diff, or Console output.
+
+##### Phase 3 — Prove no mutation
+1. Confirm the working tree is unchanged, no branch or commit was created, and no review was submitted.
+2. Record the report and your verification in the issue or PR the day names.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+Pull Request: YOUR-PR-NUMBER-OR-URL
+
+Use my normal local Hermes setup and the review skills prepared on Day 22 to perform ONE fully automated, evidence-based review of my Unity game repository.
+
+This is a one-time training mode override only. Do not modify, reinstall, patch, or save changes to `github-code-review` or `engineering-sops-pr-review`. For this review only, override the normal repository routing and treat the repository as INFORM-ONLY regardless of its normal classification.
+
+Do not pause for intermediate approval after the placeholder preflight. Complete the full review and return one final report.
+
+First, repeat the repository folder and pull request. If either value still contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Then:
+1. Confirm both review skills are installed and available. If either is unavailable, stop and return the exact Day 22 remediation.
+2. Identify the repository from its remote, state its normal routing classification, then state that this training review is overridden to inform-only.
+3. Gather PR metadata: title, description, author, actual base branch, head branch, linked issues, changed files, and current checks.
+4. Read every linked issue and extract explicit requirements and acceptance criteria. Report a missing or vague baseline instead of inventing requirements.
+5. Read the complete diff and surrounding scripts. Review C# correctness, Unity lifecycle use, serialized-field wiring, scene and prefab changes, input and collision regressions, performance, error handling, and evidence quality.
+6. Run safe read-only Unity validation: open the PR branch in the pinned Unity version, play the affected behavior, check the Console, and capture a screenshot or GIF. Report the exact steps and real results. Do not modify the worktree for formatting, dependency installation, generated files, or any other reason.
+7. Report only grounded findings. Every blocking finding must name the failed requirement or acceptance criterion, the file and line when available, the impact, and a concrete fix direction.
+8. Do not modify code, change the worktree, create commits, push, resolve gaps locally, merge, alter CI settings, change repository permissions, or submit a GitHub review.
+9. Return one report with these headings exactly: Skill Availability; Repository Mode and Training Override; PR Context; Requirements and Acceptance-Criteria Coverage; Unity Validation Performed; Verified Findings; Verdict; Suggested GitHub Review Text.
+
+If a verified blocking gap exists, the suggested text must request changes. If no verified blocking gap exists, report the zero-gap outcome honestly. Do not submit the suggested text. Never expose secrets.
+```
+
+**Deliverables:** the review report, your verification of each blocking finding, and proof that nothing changed.
+- [ ] Both skills were confirmed available before the review started.
+- [ ] The report states the normal mode and the inform-only override.
+- [ ] Requirements coverage comes from the linked issue, with gaps stated.
+- [ ] Unity validation ran on the PR branch and the real result is recorded.
+- [ ] Every blocking finding names a requirement, location, impact, and fix direction.
+- [ ] I verified each blocking finding myself and removed unreproducible ones.
+- [ ] The working tree is unchanged and no branch, commit, review, or merge was created.
 
 #### Day 25 — Gap-resolve review
-Practice the gap-resolve route only on an explicitly authorized training branch; fix only verified acceptance-criteria gaps and validate them. Otherwise, remain read-only. **Output:** validated minimal remediation or the verified no-change result.
+**Objective:** Practice the gap-resolve route on an authorized branch, fixing only verified acceptance-criteria gaps and proving the fix in Unity.
+
+**Gate:** blocking. Score it with `Resources/Rubrics.md` → Day 25. L2 does not continue to Week 6 until every line is Yes.
+
+**Preparation:** Day 24 passed, written authorization to write to the training branch, a PR branch checked out in a second project folder or worktree, and a verified gap or a genuine zero-gap expectation.
+
+##### Phase 1 — Confirm the mode and the gap
+1. Replace the placeholders and send the prompt below.
+2. Confirm the agent states the gap-resolve override and updates the branch from its actual base before changing anything.
+3. Require a verified gap before any edit: the failed acceptance criterion, the location, and the behavior.
+
+##### Phase 2 — Fix only what is verified
+1. Approve only the minimal remediation for the verified gap. Reject refactors, style sweeps, and unrelated changes.
+2. Validate in Unity: play the affected behavior, confirm zero red Console errors, and capture a GIF.
+3. If the fix fails validation, do not commit; report the failure instead.
+
+##### Phase 3 — Push only validated work
+1. Commit and push only the validated gap-resolution change to the PR branch.
+2. If no verified gap exists, create nothing and record the zero-gap result.
+3. Confirm the PR remains unmerged and unapproved.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+Pull Request: YOUR-PR-NUMBER-OR-URL
+
+Use my normal local Hermes setup and the review skills prepared on Day 22 to perform ONE fully automated, evidence-based review of my Unity game repository.
+
+This is a one-time training mode override only. Do not modify, reinstall, patch, or save changes to `github-code-review` or `engineering-sops-pr-review`. For this review only, override the normal repository routing and treat the repository as GAP-RESOLVE regardless of its normal classification.
+
+Do not pause for intermediate approval after the placeholder preflight. Complete the full review and return one final report.
+
+First, repeat the repository folder and pull request. If either value still contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Then:
+1. Confirm both review skills are installed and available. If either is unavailable, stop and return the exact Day 22 remediation.
+2. Identify the repository from its remote, state its normal routing classification, then state that this training review is overridden to gap-resolve.
+3. Gather PR metadata: title, description, author, actual base branch, head branch, linked issues, changed files, and current checks.
+4. Read every linked issue and extract explicit requirements and acceptance criteria. Report a missing or vague baseline instead of inventing requirements.
+5. Update the PR branch from its actual base branch before changing anything. If a merge conflict occurs, resolve it in favor of the PR's intended functionality, then verify the result against the requirements.
+6. Read the complete diff and surrounding scripts. Review C# correctness, Unity lifecycle use, serialized-field wiring, scene and prefab changes, input and collision regressions, performance, error handling, and evidence quality.
+7. Fix only verified requirement or acceptance-criteria gaps. Preserve scope, avoid unrelated refactors, and create no change when no verified gap exists.
+8. Validate in Unity: open the branch in the pinned Unity version, play the affected behavior, confirm zero red Console errors, and capture a screenshot or GIF. Report the exact steps and real results.
+9. If a verified gap was fixed and validation passes, commit and push only the validated gap-resolution change to the PR branch. If no verified gap exists or validation fails, create and push nothing, and report why.
+10. Do not merge, alter CI settings, change repository permissions, or submit a GitHub review.
+11. Return one report with these headings exactly: Skill Availability; Repository Mode and Training Override; PR Context; Requirements and Acceptance-Criteria Coverage; Verified Findings; Changes Made; Unity Validation Performed; Commit and Push Result; Verdict; Suggested GitHub Review Text.
+
+Report only findings grounded in requirements, source, diff, or validation output. Do not submit the suggested text. Never expose secrets.
+```
+
+**Deliverables:** the gap analysis, the validated remediation or the zero-gap result, the commit and push result, and the rubric score.
+- [ ] The gap-resolve override is stated and the installed skills are unchanged.
+- [ ] The branch was updated from its actual base before any edit.
+- [ ] Every change maps to a verified acceptance-criteria gap and nothing else.
+- [ ] Unity Play Mode validation ran after the change and the real result is recorded.
+- [ ] A commit was pushed only because validation passed, or nothing was pushed and the reason is recorded.
+- [ ] The PR is still unmerged and unapproved.
+- [ ] The Day 25 rubric is scored with every line at Yes.
 
 ### Week 6 — Issue development handoff
 
+Milestone this week: **Handoff-ready** (Day 30 gate) — one issue-grounded handoff with a dedup classification, a copy-pasteable prompt, and a plan-only IDE dry run that mutated nothing.
+
+The issue body stays authoritative all week. A handoff is an execution aid: it translates the issue for an AI assistant, and it never rewrites, extends, or replaces the issue.
+
 #### Day 26 — Handoff access and skill setup
-Verify access to one assigned, implementation-ready issue and install the internal handoff skill. Do not draft or post a handoff yet. **Output:** access and fresh-session skill readiness.
+**Objective:** Confirm issue and comment access and install the internal handoff skill.
+
+**Preparation:** Day 25 passed, one implementation-ready post-launch issue with explicit requirements and acceptance criteria, and `gh` signed in. Do not draft a handoff today.
+
+##### Phase 1 — Verify access
+1. Replace the placeholders and send the prompt below.
+2. Confirm read access to the issue, its comments, and the repository source, plus permission to add an issue comment.
+3. Use safe checks only; do not create a test comment.
+
+##### Phase 2 — Install and verify the skill
+1. Install `engineering-sops-issue-development-handoff` from `hurdman/engineering-sops` with authenticated `gh api`.
+2. Validate YAML frontmatter, the exact skill name, a non-empty body, and that the skill defines its Dedup/Overlap Preflight.
+3. Open a fresh session and load the skill.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Prepare my normal local Hermes setup for the Issue Development Handoff workflow on my Unity game repository. This is access and skill setup only: do not edit the issue, generate a handoff plan, post a comment, write code, create branches, commit, push, open pull requests, merge, modify CI, or change permissions.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Then:
+1. Resolve the issue URL and verify the existing local `gh` login can read the issue, its comments, and the repository source.
+2. Verify whether the existing login can add a comment to that issue. Do not create test comments.
+3. If read or comment access is missing, state the exact least-privilege repository permission and provide one concise escalation message. Never request, print, paste, or log secrets.
+4. Install `engineering-sops-issue-development-handoff` using authenticated `gh api` from `hurdman/engineering-sops`, branch `main`, file `.github/skills/engineering-sops-issue-development-handoff/SKILL.md`.
+5. Save it as `engineering-sops-issue-development-handoff/SKILL.md` in the Hermes skills directory derived from current configuration; do not edit Hermes configuration files directly.
+6. Validate YAML frontmatter, the exact skill name, a non-empty body, and that it defines the Dedup/Overlap Preflight with a classification and base-branch confirmation.
+7. Start a fresh Hermes session and confirm the skill loads.
+8. Return a readiness summary with the access results, the installed skill location, the fresh-session load result, and any blocker.
+
+Keep secret redaction and normal command approvals enabled.
+```
+
+**Deliverables:** the access result, the installed skill, and the fresh-session proof.
+- [ ] The issue, its comments, and the repository source are readable.
+- [ ] Comment permission is confirmed, or a specific least-privilege blocker is reported.
+- [ ] `engineering-sops-issue-development-handoff` is installed from `gh api`.
+- [ ] Frontmatter, exact name, non-empty body, and Dedup/Overlap Preflight are validated.
+- [ ] A fresh session loads the skill.
+- [ ] No handoff was drafted or posted and the issue is unchanged.
 
 #### Day 27 — Interactive handoff
-Use Hermes to inspect the issue and repository context, then draft a bounded handoff with approval checkpoints. **Output:** an approved draft; posting requires separate explicit approval.
+**Objective:** Draft one bounded, issue-grounded handoff with approval checkpoints, and post it only with separate approval.
+
+**Preparation:** Day 26 passed, the target issue implementation-ready, and the Unity checks it needs identified well enough to name them.
+
+##### Phase 1 — Establish authority and overlap
+1. Replace the placeholders and send the prompt below.
+2. Approve each checkpoint only after reading its real output: issue baseline, dedup classification, repository evidence, draft.
+3. Require a clarification-gap list instead of guessed requirements.
+
+##### Phase 2 — Review the draft
+1. Check every requirement and acceptance criterion traces to the issue body.
+2. Check the embedded prompt requires click-by-click Unity editor steps and states Play Mode acceptance checks.
+3. Reject any invented file path, scene, API, architecture decision, or dependency.
+
+##### Phase 3 — Decide on posting
+1. Show the complete comment and decide separately whether to post it.
+2. If authorized, post exactly one comment and record its URL. Otherwise keep the draft as evidence.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-issue-development-handoff` in INTERACTIVE mode for one implementation-ready issue in my Unity game repository.
+
+The issue body is authoritative for requirements, scope, and acceptance criteria. Do not rewrite the issue, write game code, create branches, commit, push, or open a pull request.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Complete only the current checkpoint, show its real result, then ask "Approve the next step?" and wait for explicit approval.
+
+1. Issue preflight: read the issue and its comments, extract requirements and acceptance criteria, and list clarification gaps. Do not guess.
+2. Dedup/Overlap Preflight: classify as MERGED, OPEN-OVERLAP, DEPENDENCY, or CLEAR, and confirm the base branch. If MERGED, stop and report the delivered PR; if OPEN-OVERLAP, do not plan covered work.
+3. Repository evidence: name the scripts, scenes, prefabs, and assets the work would touch, and the Unity checks that can prove each acceptance criterion in Play Mode.
+4. Draft handoff: the bounded development plan plus one copy-pasteable `text` prompt. The prompt must require click-by-click Unity editor steps for everything I must wire, and must state the Play Mode acceptance checks and the evidence to capture.
+5. Posting: show the complete comment and ask for separate approval. Post exactly one comment with `gh issue comment` only if I approve, then return its URL.
+
+Do not edit the issue body, change labels, change CI, change permissions, or expose secrets.
+```
+
+**Deliverables:** the checkpoint log, the approved draft, and either the comment URL or the retained draft with its gaps.
+- [ ] Requirements and acceptance criteria are quoted or closely traced to the issue body.
+- [ ] The Dedup/Overlap classification and confirmed base branch are recorded.
+- [ ] Repository evidence names the scripts, scenes, and Unity checks involved.
+- [ ] The embedded prompt requires Unity editor steps and Play Mode acceptance checks.
+- [ ] No requirement, path, scene, or API was invented; gaps are listed.
+- [ ] I approved each checkpoint explicitly.
+- [ ] At most one comment was posted, with its URL, or nothing was posted.
 
 #### Day 28 — Echo handoff
-Generate a complete handoff draft without posting it; manually post it only if authorized. **Output:** one issue-grounded draft and any unresolved clarification gaps.
+**Objective:** Generate a complete handoff draft in echo mode without posting it, then decide manually whether to post.
+
+**Preparation:** Day 27 complete, and the same or an equivalent implementation-ready issue.
+
+##### Phase 1 — Generate the draft
+1. Replace the placeholders and send the prompt below.
+2. Require the full comment, the dedup classification, and the base branch in the output.
+3. Do not let the run post anything.
+
+##### Phase 2 — Verify the draft
+1. Compare every requirement and acceptance criterion with the issue body.
+2. Verify the embedded prompt's Unity editor steps and Play Mode checks are complete.
+3. Post the comment manually only if you are authorized, and record the URL.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-issue-development-handoff` in ECHO mode. Do not ask for intermediate approval after the placeholder preflight. Read the issue and relevant repository context, run the Dedup/Overlap Preflight, and produce the complete AI Development Handoff comment — but DO NOT post it.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Then:
+1. Extract the issue's requirements and acceptance criteria and list any clarification gaps instead of inventing them.
+2. Classify related work as MERGED, OPEN-OVERLAP, DEPENDENCY, or CLEAR, and confirm the base branch.
+3. Gather repository evidence: the scripts, scenes, prefabs, and Unity checks the work would touch.
+4. Return the complete handoff comment in a fenced block, including the bounded development plan and one copy-pasteable `text` prompt with Unity editor steps and Play Mode acceptance checks.
+5. End with the exact manual action I must take to post it.
+
+Do not post the comment, edit the issue body, write code, create branches, commit, push, open a pull request, change CI, change permissions, or expose secrets.
+```
+
+**Deliverables:** the complete draft, the gap list, and either the manually posted URL or the decision not to post.
+- [ ] The run returned a complete handoff comment and posted nothing.
+- [ ] Requirements and acceptance criteria trace to the issue body.
+- [ ] The dedup classification and base branch are stated.
+- [ ] Clarification gaps are listed instead of guessed.
+- [ ] The embedded prompt includes Unity editor steps and Play Mode acceptance checks.
+- [ ] I posted it manually only if authorized, and the URL is recorded.
 
 #### Day 29 — Auto-post handoff
-For an authorized issue, check for duplicates and post at most one handoff comment. **Output:** the verified comment URL or the existing equivalent/comment blocker.
+**Objective:** Generate and auto-post at most one non-duplicate handoff for an explicitly authorized issue.
+
+**Preparation:** Day 28 passed, written authorization to comment on the issue, and a final read of the issue's requirements.
+
+##### Phase 1 — Run the authorized auto-post
+1. Replace the placeholders and send the prompt below.
+2. Require the dedup classification before any post, and confirm no equivalent comment already exists.
+
+##### Phase 2 — Verify the result
+1. Open the returned URL and confirm it is the new comment on the correct issue.
+2. Confirm the issue body, labels, and repository code are unchanged.
+3. If the run reported an existing equivalent comment, accept that URL as the result.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-issue-development-handoff` in fully automated AUTO-POST mode. Do not ask for intermediate approval after the placeholder preflight. Read the issue and relevant repository context, then run the Dedup/Overlap Preflight: if a merged pull request already closes the issue (MERGED), stop and return its URL without posting; if an open pull request or branch already covers the scope (OPEN-OVERLAP), do not plan covered work; if the issue depends on a sibling's unmerged pull request (DEPENDENCY), record that the downstream branch will be based on that sibling; otherwise classify CLEAR. Record the classification and confirmed base branch in the handoff's Related Work section.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Then:
+1. Extract the issue's requirements and acceptance criteria, and report critical clarification gaps instead of inventing them.
+2. Gather repository evidence for the affected scripts, scenes, prefabs, and Unity checks.
+3. Generate the required AI Development Handoff comment with a viable bounded development plan and one copy-pasteable `text` prompt that requires Unity editor steps and Play Mode acceptance checks.
+4. Before posting, inspect existing issue comments for an equivalent handoff. If one exists for the same issue state, do not post a duplicate; return its URL.
+5. Otherwise post exactly one comment with authenticated `gh issue comment` and verify the returned comment URL.
+
+If the issue has critical clarification gaps, do not post an implementation-ready handoff; report the gaps instead. Do not edit the issue body, write code, create branches, commit, push, open pull requests, merge, change CI, change permissions, or expose secrets.
+```
+
+**Deliverables:** the verified comment URL or the existing-equivalent result, plus the classification and base branch.
+- [ ] Written authorization to comment existed before the run.
+- [ ] The Dedup/Overlap classification and base branch are recorded.
+- [ ] Existing comments were checked for an equivalent handoff.
+- [ ] At most one new comment exists, and its URL is verified.
+- [ ] The issue body, labels, and repository code are unchanged.
+- [ ] No code, branch, commit, or pull request was created.
 
 #### Day 30 — Plan-only IDE dry run
-Run the handoff prompt in the IDE for a plan only. Do not change files or remote state. **Output:** a bounded plan, open questions, and confirmation that no mutation occurred.
+**Objective:** Run the posted handoff's prompt in the IDE for a plan only, and prove that nothing changed.
+
+**Gate:** blocking. Score it with `Resources/Rubrics.md` → Day 30. Week 7 does not start until every line is Yes.
+
+**Preparation:** Day 29 complete with a posted handoff, the game project open in the pinned Unity version, and a clean working tree.
+
+##### Phase 1 — Set the boundary
+1. Replace the placeholders and send the prompt below to Copilot Chat in the IDE.
+2. Confirm the assistant repeats the plan-only boundary and stops if the handoff is missing.
+3. Run `git status` before the first prompt and record the output.
+
+##### Phase 2 — Produce the plan
+1. Require ordered steps, files and scenes, Unity editor wiring, Play Mode acceptance checks, risks, and open questions.
+2. Reject any step that assumes a requirement the issue does not state.
+3. If the handoff conflicts with the issue body, stop and report the conflict.
+
+##### Phase 3 — Prove no mutation
+1. Run `git status` again and compare it with the first result.
+2. Confirm no branch, commit, PR, comment, label, or Project change exists.
+3. Score the Day 30 rubric.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use the posted AI Development Handoff comment on this issue as the plan-only instruction set for my IDE assistant.
+
+Read-only and plan-only boundary: do not create, edit, move, or delete any file; do not create a branch, commit, push, open a pull request, post a comment, change labels, or update Project status. Do not install packages or change project settings.
+
+First, repeat the issue URL and the handoff comment URL. If either is a YOUR- placeholder or the handoff is missing, stop and ask me.
+
+Then:
+1. Restate the issue requirements and acceptance criteria from the issue body.
+2. Read the repository context needed to plan: relevant scripts, scenes, prefabs, and project settings.
+3. Return a bounded implementation plan with ordered steps, files and scenes to change, the Unity editor wiring I must do, the Play Mode acceptance checks, risks, and open questions.
+4. Report the `git status` result from the start and end of the run as proof that nothing changed.
+5. If the handoff conflicts with the issue body, stop and report the conflict instead of choosing.
+
+Do not implement anything. Do not expose secrets.
+```
+
+**Deliverables:** the bounded plan, the open questions, the before-and-after `git status`, and the rubric score.
+- [ ] The plan-only boundary was stated before planning began.
+- [ ] Requirements and acceptance criteria come from the issue body.
+- [ ] The plan names the files and scenes to change and the editor wiring required.
+- [ ] Every acceptance criterion has a Play Mode check.
+- [ ] Open questions and conflicts are reported instead of guessed.
+- [ ] `git status` is identical before and after, and no branch, commit, PR, comment, or label changed.
+- [ ] The Day 30 rubric is scored with every line at Yes.
 
 ### Week 7 — Issue-to-PR delivery
 
+Milestone this week: **Delivery and review** (Day 35 gate) — one authorized issue delivered as a linked, reviewed PR with real Unity validation and an evidence-based AI review, left unmerged.
+
+Delivery starts only from a valid handoff. The `ai-automation` label, `Closes #<issue-number>` link, review request, and `For Review` status make the work traceable; none of them authorizes a merge.
+
 #### Day 31 — Delivery access and skill setup
-Verify only the access needed for an assigned issue-to-PR task and install the internal delivery skill. **Output:** access and fresh-session skill readiness.
+**Objective:** Verify only the access delivery needs and install the internal issue-to-PR skill.
+
+**Preparation:** Day 30 passed, a valid handoff exists on the issue, and written authorization to deliver that issue.
+
+##### Phase 1 — Verify delivery access
+1. Replace the placeholders and send the prompt below.
+2. Confirm the issue and handoff are readable, and that the login can branch, open a PR, request review, add `ai-automation`, and update the connected Project item.
+3. Do not request merge, administration, workflow, or organization-wide access.
+
+##### Phase 2 — Install and verify the skill
+1. Install `engineering-sops-issue-to-pr` from `hurdman/engineering-sops` with authenticated `gh api`.
+2. Validate frontmatter, the exact name, a non-empty body, and its Dedup/Overlap handling.
+3. Open a fresh session and confirm the skill and its prerequisites load.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Prepare my normal local Hermes setup for the Issue-to-PR Delivery workflow on my Unity game repository. This is access and skill setup only: do not implement code, create a branch, commit, push, open a pull request, request review, change labels or Project status, merge, change CI, or change permissions.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Then:
+1. Confirm the issue carries a valid Week 6 AI Development Handoff comment. If it does not, stop and report that blocker.
+2. Verify the existing `gh` login can read the issue and handoff, create branches and pull requests on this repository, request review, add the `ai-automation` label, and update the linked Project item to `For Review` when a Project is connected.
+3. State the exact least-privilege permission for anything missing and give one concise escalation message. Do not request merge, administration, workflow, or organization-wide access. Never print secrets.
+4. Install `engineering-sops-issue-to-pr` using authenticated `gh api` from `hurdman/engineering-sops`, branch `main`, file `.github/skills/engineering-sops-issue-to-pr/SKILL.md`. Save it as `engineering-sops-issue-to-pr/SKILL.md` in the Hermes skills directory derived from current configuration.
+5. Validate YAML frontmatter, the exact skill name, a non-empty body, and that it handles the Dedup/Overlap classifications.
+6. Start a fresh Hermes session and confirm the skill loads with its prerequisite skills.
+7. Return a readiness summary with the access results, installed skill location, fresh-session result, and any blocker.
+
+Keep secret redaction and normal command approvals enabled.
+```
+
+**Deliverables:** the access result, the installed skill, and the fresh-session proof.
+- [ ] A valid Week 6 handoff exists on the issue.
+- [ ] Read access to the issue and handoff is confirmed.
+- [ ] Branch, PR, review-request, label, and Project-status access is confirmed or blocked explicitly.
+- [ ] No merge, administration, workflow, or organization-wide access was requested.
+- [ ] `engineering-sops-issue-to-pr` is installed and validated.
+- [ ] A fresh session loads the skill with its prerequisites.
+- [ ] No code, branch, commit, PR, label, or Project change was made.
 
 #### Day 32 — Interactive delivery
-Deliver one valid handoff-backed issue through implementation, Unity validation, and an issue-linked PR, with approval at each external or implementation checkpoint. **Output:** verified delivery evidence; leave the PR unmerged for independent review.
+**Objective:** Deliver one handoff-backed issue through implementation, Unity validation, and an issue-linked PR, with approval at every stage.
+
+**Preparation:** Day 31 passed, a valid handoff, written authorization to deliver, and the pinned Unity project with a clean working tree.
+
+##### Phase 1 — Approve the stages
+1. Replace the placeholders and send the prompt below.
+2. Approve each stage only after reading its real evidence: handoff preflight, label, branch and plan, edits, validation, commit, push, PR, review request, Project status.
+3. Stop the run if the handoff's dedup classification says MERGED or OPEN-OVERLAP.
+
+##### Phase 2 — Hold the Unity line
+1. Require click-by-click editor steps for every scene or Inspector change, and perform the wiring yourself.
+2. Play the changed behavior, confirm zero red Console errors, and capture a GIF for the PR.
+3. Reject any implementation step outside the issue's acceptance criteria.
+
+##### Phase 3 — Leave it open for review
+1. Verify `Closes #<issue-number>` in the PR body, the review request, and the Project status.
+2. Confirm the PR is unmerged and unapproved.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-issue-to-pr` in INTERACTIVE mode for my Unity game repository.
+
+Confirm the valid Week 6 handoff first. Honor its Dedup/Overlap classification when choosing the base: if MERGED, stop and report the already-delivered pull request; if OPEN-OVERLAP, do not create a parallel pull request (close any redundant newer pull request as superseded, pointing at the existing one, without deleting its branch); if DEPENDENCY, create the issue branch as a child of the sibling branch, never committing onto or pushing to the sibling; if CLEAR, branch from the confirmed base.
+
+Complete only the current stage, show real evidence, then ask "Approve the next step?" and wait for explicit approval.
+
+Use these stages: handoff preflight; `ai-automation` label; branch and implementation plan; proposed edits; Unity validation; commit; push; pull request creation and linked-issue verification; review request; Project Status `For Review` update and verification.
+
+For every scene, prefab, or Inspector change, give me click-by-click editor steps naming the object to select, the component to add, and the reference to drag into each field. State the Play Mode check that proves each acceptance criterion, run it, and report the real result including Console errors. Do not implement anything outside the issue's acceptance criteria.
+
+Do not merge, bypass CI, expose secrets, or edit the issue body. At the end, provide the full final report required by the skill.
+```
+
+**Deliverables:** the PR, the validation evidence, and the verified links and status.
+- [ ] Delivery started only after the handoff was confirmed valid.
+- [ ] The dedup classification chose the base, and MERGED or OPEN-OVERLAP stopped the run.
+- [ ] Every change maps to an issue acceptance criterion.
+- [ ] Unity editor steps were supplied for each scene or Inspector change and wired by me.
+- [ ] Play Mode validation ran and the real result, including Console state, is recorded.
+- [ ] The PR contains `Closes #<issue-number>` and an explicit review request.
+- [ ] Project status is verified as `For Review`, or the exact blocker is reported.
+- [ ] The PR is unmerged and unapproved.
 
 #### Day 33 — Automated delivery, then manual review
-Run authorized delivery in the skill's ECHO mode, then manually run the review workflow. ECHO here performs delivery; it is not a no-mutation dry run. **Output:** a validated PR and a separate review result.
+**Objective:** Run authorized delivery in echo mode, then run the review workflow yourself on the delivered PR.
+
+**Preparation:** Day 32 passed, a valid handoff for a second authorized issue, and authorization for automated delivery.
+
+Echo performs the delivery. It is not a no-mutation dry run.
+
+##### Phase 1 — Run the delivery
+1. Replace the placeholders and send the prompt below.
+2. Verify the PR, its issue link, its review request, and its Project status from the returned evidence.
+
+##### Phase 2 — Review it manually
+1. Run the Day 23 interactive review, or the Day 24 inform-only review, against the new PR.
+2. Record the verdict and the findings you verified yourself.
+3. Do not submit an approval or merge.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-issue-to-pr` in ECHO mode. Do not ask for intermediate approval after the placeholder preflight. Confirm a valid Week 6 handoff, honor its Dedup/Overlap classification when choosing the base, and complete the full delivery: confirm `ai-automation`, implement within the issue's acceptance criteria, validate in Unity with real Play Mode results, commit, push, create a pull request with `Closes #<issue-number>`, verify the link, request review, and set and verify Project Status `For Review`.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+For every scene, prefab, or Inspector change, give me click-by-click editor steps naming the object, the component, and the reference to drag into each field. State the Play Mode check for each acceptance criterion, run it, and report the real result including Console errors.
+
+Return the complete delivery evidence required by the skill, including the pull request URL, the verified issue link, the review request, the Project status result or its exact blocker, and any blocked check.
+
+Do not merge, submit a review, approve the pull request, bypass CI, edit the issue body, or expose secrets.
+```
+
+**Deliverables:** the delivered PR with verified links, and a separate verified review result.
+- [ ] Automated delivery started only after the handoff was confirmed valid.
+- [ ] The PR contains `Closes #<issue-number>` and an explicit review request.
+- [ ] Project status is verified as `For Review`, or the exact blocker is reported.
+- [ ] Unity validation results in the delivery evidence are real and referenced.
+- [ ] I ran the review workflow manually against the new PR.
+- [ ] The review verdict and findings were verified by me.
+- [ ] Nothing was submitted, approved, or merged.
 
 #### Day 34 — Delivery and review recommendation
-Deliver an authorized issue, then recommend the correctly routed review mode without running it. **Output:** PR evidence and the exact next review prompt.
+**Objective:** Deliver an authorized issue and recommend the correctly routed review mode without running it.
+
+**Preparation:** Day 33 passed, a valid handoff for a third authorized issue, and the repository's review routing known.
+
+##### Phase 1 — Deliver
+1. Replace the placeholders and send the prompt below.
+2. Verify the PR, the issue link, the review request, and the Project status.
+
+##### Phase 2 — Recommend, do not run
+1. Identify the review mode the installed routing selects for this repository.
+2. Write the exact next review prompt for that mode, ready to paste.
+3. Do not run it, submit it, or edit any skill.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-issue-to-pr` in AUTO mode. Do not ask for intermediate approval after the placeholder preflight. Confirm a valid Week 6 handoff, honor its Dedup/Overlap classification when choosing the base, and complete the full delivery: `ai-automation`, scoped implementation, real Unity validation, commit, push, a pull request with `Closes #<issue-number>`, verified issue link, review request, and verified Project Status `For Review` or its exact blocker.
+
+Then recommend the review action only. State the mode the installed repository routing selects, and return the exact next review prompt I should paste, with its placeholders already filled from this run. Do not run that review, submit a GitHub review, approve, merge, bypass CI, edit the issue body, or expose secrets.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Report the PR URL, requirements and acceptance-criteria coverage, the Unity validation steps and real results, blocked checks, the recommended review mode with its reason, and the exact next prompt.
+```
+
+**Deliverables:** the PR evidence and the exact recommended review prompt.
+- [ ] Delivery completed with a verified issue link and review request.
+- [ ] Project status is verified as `For Review`, or the exact blocker is reported.
+- [ ] The recommended review mode matches the installed routing.
+- [ ] The exact next review prompt is written and ready to paste.
+- [ ] The review was not run, submitted, or simulated.
+- [ ] Nothing was merged, approved, or edited outside the issue scope.
 
 #### Day 35 — Delivery with automated review
-Run authorized delivery followed by the prescribed AI review. Do not submit a review, approve, or merge. **Output:** PR and evidence-based review results for the required human reviewer.
+**Objective:** Deliver an authorized issue and run the prescribed AI review, leaving the result for the human reviewer.
 
-### Week 8 — Independent task culmination
+**Gate:** blocking. Score it with `Resources/Rubrics.md` → Day 35. Week 8 does not start until every line is Yes.
 
-#### Day 36 — Local preflight
-Read the assigned task and project context without changing files or remote state. **Output:** requirements, available Unity checks, and blockers.
+**Preparation:** Day 34 passed, a valid handoff for a fourth authorized issue, and written authorization for automated delivery and review.
 
-#### Day 37 — Interactive task execution
-Plan and implement one authorized scoped task with approval before changes and external actions. Validate it in Unity; create a PR only when explicitly authorized. **Output:** actual local validation and, if applicable, an unmerged PR for independent review.
+##### Phase 1 — Deliver and review
+1. Replace the placeholders and send the prompt below.
+2. Confirm delivery evidence before accepting the review section of the report.
 
-#### Day 38 — Read-only dry run
-Produce an implementation and validation plan without invoking a delivery mode or mutating local or remote state. **Output:** a bounded plan and unresolved questions.
+##### Phase 2 — Verify the review
+1. Re-check every blocking finding against the issue, the diff, and the Unity result.
+2. Confirm the review was not submitted, approved, or merged.
 
-#### Day 39 — Read-only review practice
-Review an authorized change or disposable example; verify candidate findings locally and distinguish defects from subjective suggestions. **Output:** a no-mutation review record.
+##### Phase 3 — Hand it over
+1. Record the PR URL, the review verdict, the verified findings, and the blocked checks for the human reviewer.
+2. Score the Day 35 rubric.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-issue-to-pr` in AUTO-REVIEW mode. Do not ask for intermediate approval after the placeholder preflight. Confirm a valid Week 6 handoff, honor its Dedup/Overlap classification when choosing the base, then complete full delivery: confirm `ai-automation`, implement within the issue's acceptance criteria, validate in Unity with real Play Mode results, commit, push, create a pull request with `Closes #<issue-number>`, verify the link, request review, and set and verify Project Status `For Review`.
+
+Then automatically run both `github-code-review` and `engineering-sops-pr-review` on the new pull request. Follow the repository's normal routing and return the evidence-backed verdict, requirements and acceptance-criteria coverage, Unity validation results, verified findings, blocked checks, and suggested GitHub review text.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+For every scene, prefab, or Inspector change during delivery, give me click-by-click editor steps naming the object, the component, and the reference to drag into each field.
+
+Do not submit an approval or review, merge, bypass CI, edit the issue body, or expose secrets.
+```
+
+**Deliverables:** the PR, the AI review report, the human-review handover, and the rubric score.
+- [ ] Delivery used a valid handoff and stayed inside the issue's acceptance criteria.
+- [ ] The PR carries a verified `Closes #<issue-number>`, a review request, and verified `For Review` status or its exact blocker.
+- [ ] Unity validation ran on the delivered branch and the real result is recorded.
+- [ ] The prescribed AI review ran and its verdict is stated with evidence.
+- [ ] I verified each blocking finding against the issue, diff, and Unity result.
+- [ ] Blocked checks are reported as blocked.
+- [ ] No review was submitted and nothing was approved or merged.
+- [ ] The Day 35 rubric is scored with every line at Yes.
+
+### Week 8 — Task-to-reviewed-PR culmination
+
+Milestone this week: **Level 2 capstone** (Day 40 gate) — one task carried from authoritative requirements through handoff, delivery, Unity validation, AI review, and a final packet that leaves only the human decision.
+
+The task must be authored by someone other than you — your producer, Scrum Master, or training lead — so the requirements are genuinely authoritative. The workflow may create the handoff, branch, commit, PR, review request, `ai-automation` label, and `For Review` status. It never merges, self-approves, bypasses CI, or replaces the final human review.
+
+#### Day 36 — Culmination access and skill setup
+**Objective:** Confirm orchestration access and install the culmination skill without running a task.
+
+**Preparation:** Day 35 passed, a task issue authored by someone else with explicit requirements and acceptance criteria, and written authorization to run it later this week.
+
+##### Phase 1 — Validate the task and access
+1. Replace the placeholders and send the prompt below.
+2. Confirm the issue has usable requirements and acceptance criteria before any workflow starts.
+3. Verify access for issue comments, labels, branches, pull requests, review requests, and the connected Project item status.
+
+##### Phase 2 — Install and verify the skill
+1. Install `engineering-sops-task-to-reviewed-pr` from `hurdman/engineering-sops` with authenticated `gh api`.
+2. Validate frontmatter, the exact name, a non-empty body, and its prerequisite skills.
+3. Open a fresh session and load the skill with its prerequisites.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Prepare my normal local Hermes setup for the Task-to-Reviewed-PR workflow on my Unity game repository. This is access and skill setup only: do not create a handoff, add labels, write code, create branches, commit, push, create a pull request, request review, change Project status, or submit any review.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Then:
+1. Confirm the issue was authored by someone other than me and has usable requirements and acceptance criteria. If either is missing, stop and report the gap.
+2. Verify least-privilege access for issue comments, labels, repository branches, pull-request creation, review requests, and the existing Project item Status update. State the exact permission missing and one escalation message.
+3. Install `engineering-sops-task-to-reviewed-pr` using authenticated `gh api` from `hurdman/engineering-sops`, branch `main`, file `.github/skills/engineering-sops-task-to-reviewed-pr/SKILL.md`. Save it as `engineering-sops-task-to-reviewed-pr/SKILL.md` in the Hermes skills directory derived from current configuration.
+4. Validate YAML frontmatter, the exact skill name, a non-empty body, and its prerequisite skills.
+5. Start a fresh Hermes session and confirm the skill loads with all prerequisites.
+6. Return readiness evidence with the access results, installed skill location, fresh-session result, and exact blockers.
+
+Never print secrets or request merge, administration, workflow, or organization-wide access.
+```
+
+**Deliverables:** the task validation, the access result, and the installed skill.
+- [ ] The task issue was authored by someone else and has explicit requirements and acceptance criteria.
+- [ ] Comment, label, branch, PR, review-request, and Project-status access is confirmed or blocked explicitly.
+- [ ] `engineering-sops-task-to-reviewed-pr` is installed and validated.
+- [ ] A fresh session loads the skill and its prerequisites.
+- [ ] No handoff, label, code, branch, PR, review, or Project change was made.
+
+#### Day 37 — Interactive task delivery
+**Objective:** Run the complete task lifecycle interactively, pausing at every external mutation and leaving the PR for human review.
+
+**Preparation:** Day 36 passed, a validated task issue, written authorization, and the pinned Unity project in a clean state.
+
+##### Phase 1 — Approve each stage
+1. Replace the placeholders and send the prompt below.
+2. Approve each stage only after its real evidence is shown: preflight, handoff, label, branch and plan, edits, validation, commit, push, PR, review request, Project status, AI review report.
+3. Stop the run on a dedup classification that says the work is already delivered.
+
+##### Phase 2 — Keep the work verifiable
+1. Require Unity editor steps for each scene or Inspector change and perform the wiring yourself.
+2. Play the acceptance behavior, confirm zero red Console errors, and capture the GIF.
+3. Reject edits outside the task's acceptance criteria.
+
+##### Phase 3 — Hand over to the human reviewer
+1. Confirm the PR is unmerged and unapproved and that Project status is `For Review` or its blocker is reported.
+2. Name the human reviewer who must decide.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-task-to-reviewed-pr` in INTERACTIVE mode for this task issue in my Unity game repository. The issue body is authoritative for requirements, scope, and acceptance criteria.
+
+Confirm the requirements and acceptance criteria are sufficient before starting. If they are not, stop and report the gap.
+
+Complete only the current stage, show real evidence, then ask "Approve the next step?" and wait for explicit approval.
+
+Stages: issue and handoff preflight; handoff generation and posting; `ai-automation` label; branch and implementation plan; code edits; Unity validation; commit; push; pull-request creation and link verification; review request; Project Status `For Review`; AI review report; final human-review handoff.
+
+For every scene, prefab, or Inspector change, give me click-by-click editor steps naming the object, the component, and the reference to drag into each field. State the Play Mode check for each acceptance criterion, run it, and report the real result including Console errors.
+
+Do not submit a GitHub review, approve, merge, bypass CI, edit the issue body, or expose secrets.
+```
+
+**Deliverables:** the complete lifecycle evidence and the named human reviewer.
+- [ ] Requirements and acceptance criteria were confirmed before the run.
+- [ ] Each stage was approved explicitly before the next one started.
+- [ ] The handoff was posted once, with its URL.
+- [ ] Delivery stayed inside the task's acceptance criteria.
+- [ ] Unity validation ran with real results and evidence.
+- [ ] The PR is linked, review was requested, and `For Review` is verified or blocked explicitly.
+- [ ] The AI review report is included and not submitted as a review.
+- [ ] The PR is unmerged and unapproved, and the human reviewer is named.
+
+#### Day 38 — Automated task delivery echo
+**Objective:** Run the full lifecycle automatically and return the complete evidence packet for human review.
+
+**Preparation:** Day 37 passed, another validated task issue, and authorization for automated orchestration.
+
+##### Phase 1 — Run the orchestration
+1. Replace the placeholders and send the prompt below.
+2. Confirm the issue's requirements before the run starts.
+
+##### Phase 2 — Read the packet
+1. Verify the handoff URL, PR URL, requirements coverage, Unity validation results, AI review verdict, and blocked checks.
+2. Confirm the PR is unmerged, unapproved, and that the final human action is stated.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+
+Use `engineering-sops-task-to-reviewed-pr` in ECHO mode. Do not ask for intermediate approval after the placeholder preflight. Confirm the issue has sufficient requirements and acceptance criteria authored by someone other than me, then generate and post the non-duplicate handoff, deliver the task through a validated linked pull request, request review, set and verify `For Review`, and run `github-code-review` with `engineering-sops-pr-review`.
+
+First, repeat the repository folder and issue URL. If either contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+State the Play Mode check for each acceptance criterion and report the real result, including Console errors, for every scene or Inspector change.
+
+Return the full final report required by the skill, including the handoff URL, PR URL, requirements and acceptance-criteria coverage, Unity validation results, AI review verdict and verified findings, blocked checks, and the exact final human-review action required.
+
+Do not submit a GitHub review, self-approve, merge, bypass CI, rewrite the issue body, or expose secrets.
+```
+
+**Deliverables:** the handoff and PR, the validated packet, and the stated human action.
+- [ ] The issue's requirements and acceptance criteria were sufficient before the run.
+- [ ] Exactly one non-duplicate handoff was generated and posted.
+- [ ] Delivery stayed in scope and the PR is linked with a review request and `For Review` or its blocker.
+- [ ] Unity validation results are real and recorded.
+- [ ] The AI review verdict and findings are evidence-backed.
+- [ ] Blocked checks are reported.
+- [ ] Nothing was submitted, approved, merged, or edited outside scope.
+- [ ] The exact final human action is stated.
+
+#### Day 39 — Final review recommendation
+**Objective:** Run the orchestration automatically and state exactly who must perform the final review.
+
+**Preparation:** Day 38 passed, another validated task issue, and your initiator role known.
+
+##### Phase 1 — Run and recommend
+1. Replace the placeholders, including `YOUR-INITIATOR-ROLE`, and send the prompt below.
+2. Confirm the packet and the final reviewer requirement.
+
+##### Phase 2 — Check the accountability rule
+1. If you are the EM, the recommendation must name a different EM.
+2. Otherwise the recommendation must name an EM.
+3. Confirm no review was submitted or approval recorded.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+Initiator Role: YOUR-INITIATOR-ROLE
+
+Use `engineering-sops-task-to-reviewed-pr` in RECOMMEND FINAL REVIEW mode. Do not ask for intermediate approval after the placeholder preflight. Confirm the task issue has requirements and acceptance criteria authored by someone other than me, complete the valid issue-to-handoff-to-PR-to-AI-review workflow, and return the final human review recommendation.
+
+If Initiator Role is EM, state that another EM must conduct the final review. Otherwise state that an EM must conduct it.
+
+First, repeat the repository folder, issue URL, and initiator role. If any value contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Include the handoff URL, PR URL, AI review verdict, verified findings, Unity validation evidence, blocked checks, and the exact final reviewer action.
+
+Do not submit a GitHub review, self-approve, merge, bypass CI, rewrite the issue body, or expose secrets.
+```
+
+**Deliverables:** the completed packet and the explicit final reviewer assignment.
+- [ ] The initiator role was stated and repeated before the run.
+- [ ] The workflow completed from issue through handoff, PR, and AI review.
+- [ ] The final reviewer is named and satisfies the accountability rule.
+- [ ] The packet includes the PR, verdict, findings, Unity evidence, and blocked checks.
+- [ ] No review was submitted and nothing was approved or merged.
 
 #### Day 40 — Level 2 capstone
-Complete one scoped task through requirements, implementation, local validation, and evidence-based review practice. Use an authorized PR and independent human review when the project requires one; never merge or self-approve. **Output:** the task, acceptance-criteria results, validation evidence, review findings, and remaining blockers.
+**Objective:** Run the full culmination and leave only the final human decision.
+
+**Gate:** blocking. Score it with `Resources/Rubrics.md` → Day 40. L2 is complete only when every line is Yes.
+
+**Preparation:** Day 39 passed, a final validated task issue, and authorization for the full run.
+
+##### Phase 1 — Run the culmination
+1. Replace the placeholders, including `YOUR-INITIATOR-ROLE`, and send the prompt below.
+2. Do not intervene after the placeholder check; the run is the measured exercise.
+
+##### Phase 2 — Assemble the capstone packet
+1. Collect the issue URL, handoff URL, PR URL, requirements coverage, Unity validation results, AI review verdict and findings, blocked checks, and the exact final decision needed.
+2. Confirm the PR is unmerged and unapproved and the named reviewer satisfies the accountability rule.
+
+##### Phase 3 — Score and close
+1. Score the Day 40 rubric against the packet alone.
+2. Save the packet with the game repository evidence the day names.
+
+##### Copyable prompt
+```text
+Game Repository Folder: YOUR-GAME-REPO-FOLDER
+GitHub Issue: YOUR-ISSUE-URL
+Initiator Role: YOUR-INITIATOR-ROLE
+
+Use `engineering-sops-task-to-reviewed-pr` in FULL CULMINATION mode. Do not ask for intermediate approval after the placeholder preflight. Confirm the task issue was authored by someone other than me and has sufficient requirements and acceptance criteria, generate and post one valid non-duplicate handoff, deliver the task through a validated linked pull request, request review, set and verify `For Review`, and run the installed AI review workflow.
+
+First, repeat the repository folder, issue URL, and initiator role. If any value contains a YOUR- placeholder or is unclear, stop and ask me to replace it.
+
+Leave the pull request unmerged and unapproved. Produce a final review packet containing the issue and handoff URLs, the PR URL, requirements and acceptance-criteria coverage, Unity validation steps and real results including Console errors, the AI review verdict and verified findings, blocked checks, and the exact final decision needed.
+
+If Initiator Role is EM, require final review by another EM; otherwise require final review by an EM. Do not self-approve, merge, bypass CI, rewrite the issue body, or expose secrets.
+```
+
+**Deliverables:** the full capstone packet and the rubric score.
+- [ ] The task issue was authored by someone else and has requirements and acceptance criteria.
+- [ ] Exactly one non-duplicate handoff was posted and linked in the packet.
+- [ ] The PR is linked to the issue, review was requested, and `For Review` is verified or its blocker reported.
+- [ ] Delivery stayed inside scope and every acceptance criterion has a result.
+- [ ] Unity validation evidence is real, including Console state.
+- [ ] The AI review verdict and findings are evidence-backed and not submitted as a review.
+- [ ] Blocked checks are reported as blocked.
+- [ ] The reviewer satisfies the accountability rule, and the packet names the exact final decision.
+- [ ] Nothing was merged or self-approved.
+- [ ] The Day 40 rubric is scored with every line at Yes.
 
 ## Level 3 — Repeatable, human-controlled workflows (Days 41–60)
 
@@ -938,4 +1868,4 @@ Reopen the capstone scene in Unity, exercise its main behavior and failure case 
 
 ## Completion standard
 
-The program is complete when the learner can independently plan a bounded Unity change, use Copilot and Gemini without surrendering judgment, inspect the C# implementation, and verify the behavior in Unity. No external software, cloud workflow, source-control service, training submission, or supervisor sign-off is part of this plan.
+The program is complete when the learner can independently plan a bounded Unity change, use Copilot and Gemini without surrendering judgment, inspect the C# implementation, and verify the behavior in Unity. For Level 2 it is also complete when the learner can run controlled Hermes review, handoff, and delivery workflows without bypassing human review or CI. Only the tools named in Approved Tools and Boundaries are part of the plan; no training submission and no supervisor sign-off are required.

@@ -1,6 +1,6 @@
 # Rubrics
 
-Pass/fail scorecards for the gate days in Level 1.
+Pass/fail scorecards for the gate days in Level 1 and Level 2.
 
 Every line is Yes or No. No "mostly". **Pass means every line is Yes.** One No means fix it and re-score.
 
@@ -88,3 +88,49 @@ Scored by: <name> — Date: YYYY-MM-DD — Result: PASS / NOT YET
 - [ ] A gameplay video of 2 minutes or less is posted
 - [ ] The post-launch list exists as repository issues
 - [ ] The retrospective is posted
+
+## Day 25 — Review Modes (gate)
+
+- [ ] Hermes launches locally and both `github-code-review` and `engineering-sops-pr-review` load in a fresh session
+- [ ] The interactive review required explicit approval at every checkpoint before the next step
+- [ ] The inform-only review made no working-tree, commit, push, branch, review, CI, permission, or merge change
+- [ ] The gap-resolve review changed only verified acceptance-criteria gaps and pushed only after Unity validation passed
+- [ ] Every review tied its findings to a linked requirement, the diff, or real Unity Play Mode and Console results
+- [ ] No finding was accepted without reproducing it
+- [ ] The installed skills were unchanged and no GitHub review was submitted
+- [ ] No pull request was merged or self-approved
+
+## Day 30 — Handoff Readiness (gate)
+
+- [ ] The issue, its comments, and the repository source are readable, and comment access is confirmed or blocked explicitly
+- [ ] `engineering-sops-issue-development-handoff` loads in a fresh session with a valid Dedup/Overlap Preflight
+- [ ] One handoff is grounded in the issue body, with clarification gaps listed instead of invented
+- [ ] The Dedup/Overlap classification and confirmed base branch are recorded
+- [ ] The embedded prompt requires click-by-click Unity editor steps and Play Mode acceptance checks
+- [ ] At most one comment was posted and its URL is verified
+- [ ] The issue body and repository code are unchanged
+- [ ] The plan-only dry run left `git status` identical and created no branch, commit, pull request, comment, label, or Project change
+
+## Day 35 — Delivery and Review (gate)
+
+- [ ] Delivery started only from a valid Week 6 handoff
+- [ ] Every change maps to an issue acceptance criterion, and the dedup classification chose the base
+- [ ] Unity Play Mode validation ran on the delivered branch and the real result, including Console state, is recorded
+- [ ] The pull request contains `Closes #<issue-number>` and an explicit review request
+- [ ] Project status is verified as `For Review`, or the exact blocker is reported
+- [ ] The prescribed AI review ran and its verdict is backed by requirements, diff, or validation evidence
+- [ ] Every blocking finding was verified, and blocked checks are reported as blocked
+- [ ] No review was submitted, no approval was recorded, and the pull request is unmerged
+
+## Day 40 — Level 2 Capstone (gate)
+
+- [ ] The task issue was authored by someone else and states requirements and acceptance criteria
+- [ ] Exactly one non-duplicate handoff was posted and used
+- [ ] Delivery stayed inside scope and every acceptance criterion has a stated result
+- [ ] Unity validation evidence is real and includes Console state
+- [ ] The pull request is linked, review was requested, and `For Review` is verified or its blocker is reported
+- [ ] The AI review verdict and findings are evidence-backed and were not submitted as a review
+- [ ] Blocked checks are reported as blocked
+- [ ] The final reviewer satisfies the accountability rule: another EM when the initiator is an EM
+- [ ] The packet names the exact final decision needed
+- [ ] Nothing was merged or self-approved

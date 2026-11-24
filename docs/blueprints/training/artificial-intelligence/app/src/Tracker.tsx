@@ -11,7 +11,7 @@ import {
   Layers3,
   RotateCcw,
 } from 'lucide-react'
-import { curriculumFiles, type TrainingDay } from './curriculum'
+import { curriculumFiles, levelDefinitions, levelNameFor, type TrainingDay, type TrainingLevel } from './curriculum'
 import {
   formatDate,
   getActiveIndex,
@@ -28,8 +28,6 @@ import {
   type ProgressState,
 } from './progress'
 import './Tracker.css'
-
-const levelName = 'Foundations'
 
 function MarkdownContent({ source, className }: { source: string; className: string }) {
   const html = useMemo(() => DOMPurify.sanitize(marked.parse(source, { async: false })), [source])
@@ -51,6 +49,7 @@ function Tracker() {
   const [progress, setProgress] = useState<ProgressState>(initialProgress.progress)
   const [storageError, setStorageError] = useState<string | null>(initialProgress.error)
   const [view, setView] = useState<'today' | 'curriculum'>('today')
+  const [selectedLevel, setSelectedLevel] = useState<TrainingLevel>(1)
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null)
   const [todayIndex, setTodayIndex] = useState<number | null>(null)
 
@@ -67,6 +66,9 @@ function Tracker() {
   }, [progress, storageError])
 
   const days = curriculumFiles
+  const levelDays = days.filter((day) => day.level === selectedLevel)
+  const levelName = levelNameFor(selectedLevel)
+  const levelProgressCount = levelDays.filter((day) => isDayFinished(day, progress)).length
   const firstIncompleteIndex = days.findIndex((day) => !isDayFinished(day, progress))
   const trackComplete = firstIncompleteIndex === -1
   const activeIndex = getActiveIndex(
@@ -81,7 +83,12 @@ function Tracker() {
   const todayDay = days[todayPosition]
   const showTodayDay = todayDay != null && (!trackComplete || browsingToday)
   const selectedDay = selectedDayId ? days.find((day) => day.id === selectedDayId) : undefined
-  const displayedDay = view === 'today' ? (showTodayDay ? todayDay : null) : (selectedDay ?? activeDay)
+  const activeDayInLevel = activeDay?.level === selectedLevel ? activeDay : undefined
+  const selectedDayInLevel = selectedDay?.level === selectedLevel ? selectedDay : undefined
+  const displayedDay = view === 'today'
+    ? (showTodayDay ? todayDay : null)
+    : selectedDayInLevel ?? activeDayInLevel ?? levelDays[0]
+  const topbarLevel = displayedDay?.level ?? selectedLevel
   const displayedIndex = displayedDay ? days.indexOf(displayedDay) : -1
   const isActionable = !storageError && displayedDay != null
   const checklist = displayedDay?.checklist ?? []
@@ -143,6 +150,7 @@ function Tracker() {
   }
 
   function openCurriculumDay(day: TrainingDay) {
+    setSelectedLevel(day.level)
     setSelectedDayId(day.id)
     setView('curriculum')
   }
@@ -158,7 +166,7 @@ function Tracker() {
       <>
         {Object.hasOwn(progress.retiredChecks, displayedDay.id) && (
           <p className="read-only-hint">
-            Earlier L1 checks are archived. Saved completion is historical, not verification of these revised exercises.
+            Earlier checks for this day are archived. Saved completion is historical, not verification of these revised exercises.
             Revised checks were initially unchecked; dates and private notes are preserved.
           </p>
         )}
@@ -193,14 +201,22 @@ function Tracker() {
 
         <div className="sidebar-label level-label">YOUR TRACK</div>
         <div className="level-list">
-          <button
-            className={`level-item ${view === 'curriculum' ? 'level-selected' : ''}`}
-            onClick={() => { setSelectedDayId(null); setView('curriculum') }}
-          >
-            <span className="level-dot" />
-            <span className="level-name"><strong>L1</strong><small>{levelName}</small></span>
-            <span className="level-progress">{progressCount}/{days.length}</span>
-          </button>
+          {levelDefinitions.map((definition) => {
+            const levelDayList = days.filter((day) => day.level === definition.level)
+            const finishedCount = levelDayList.filter((day) => isDayFinished(day, progress)).length
+            const isSelected = view === 'curriculum' && selectedLevel === definition.level
+            return (
+              <button
+                key={definition.level}
+                className={`level-item ${isSelected ? 'level-selected' : ''}`}
+                onClick={() => { setSelectedLevel(definition.level); setSelectedDayId(null); setView('curriculum') }}
+              >
+                <span className="level-dot" />
+                <span className="level-name"><strong>L{definition.level}</strong><small>{definition.name}</small></span>
+                <span className="level-progress">{finishedCount}/{levelDayList.length}</span>
+              </button>
+            )
+          })}
         </div>
 
         <div className="sidebar-bottom">
@@ -227,7 +243,7 @@ function Tracker() {
         <header className="topbar">
           <div className="breadcrumbs"><span>Training</span><ChevronRight size={14} /><strong>{view === 'today' ? 'Daily plan' : 'Curriculum'}</strong></div>
           <div className="topbar-tools">
-            <span className="level-tag">L1 · {levelName}</span>
+            <span className="level-tag">L{topbarLevel} · {levelNameFor(topbarLevel)}</span>
           </div>
         </header>
 
@@ -277,7 +293,7 @@ function Tracker() {
                       )}
                     </div>
                     <div className="assignment-meta">
-                      <span className="level-tag">L1 · {levelName}</span>
+                      <span className="level-tag">L{todayDay.level} · {levelNameFor(todayDay.level)}</span>
                       <span className="meta-divider">/</span>
                       <span>Week {todayDay.weekNumber}</span>
                       <span className="meta-divider">/</span>
@@ -360,7 +376,7 @@ function Tracker() {
                 <section className="all-done-panel">
                   <div className="all-done-mark"><Check size={26} /></div>
                   <span className="panel-kicker">TRACK COMPLETE</span>
-                  <h2>You’ve finished the L1 curriculum.</h2>
+                  <h2>You’ve finished the training curriculum.</h2>
                   <p>All {days.length} weekday assignments are complete.</p>
                   <button className="secondary-action" onClick={() => setView('curriculum')}>Review curriculum <ChevronRight size={16} /></button>
                 </section>
@@ -378,16 +394,30 @@ function Tracker() {
               <section className="page-heading curriculum-heading">
                 <div>
                   <div className="eyebrow"><span className="eyebrow-dot blue-dot" /> CURRICULUM LIBRARY</div>
-                  <h1>L1 <span>{levelName}</span></h1>
-                  <p className="subheading">Browse the {days.length} L1 training days. Only the scheduled day can be checked off.</p>
+                  <h1>L{selectedLevel} <span>{levelName}</span></h1>
+                  <p className="subheading">Browse the {levelDays.length} L{selectedLevel} training days. Only the scheduled day can be checked off.</p>
                 </div>
-                <div className="level-completion"><strong>{progressCount}<small> / {days.length}</small></strong><span>days complete</span></div>
+                <div className="level-completion"><strong>{levelProgressCount}<small> / {levelDays.length}</small></strong><span>days complete</span></div>
               </section>
+
+              <div className="level-tabs" role="tablist" aria-label="Training levels">
+                {levelDefinitions.map((definition) => (
+                  <button
+                    key={definition.level}
+                    role="tab"
+                    aria-selected={selectedLevel === definition.level}
+                    className={`level-tab ${selectedLevel === definition.level ? 'active' : ''}`}
+                    onClick={() => { setSelectedLevel(definition.level); setSelectedDayId(null) }}
+                  >
+                    <strong>L{definition.level}</strong> {definition.name}
+                  </button>
+                ))}
+              </div>
 
               <div className="curriculum-layout">
                 <div className="curriculum-list">
-                  <div className="curriculum-list-head"><strong>L1 · {levelName}</strong><span>{days.length} weekdays</span></div>
-                  {days.map((day) => {
+                  <div className="curriculum-list-head"><strong>L{selectedLevel} · {levelName}</strong><span>{levelDays.length} weekdays</span></div>
+                  {levelDays.map((day) => {
                     const dayIndex = days.indexOf(day)
                     const isFinished = isDayFinished(day, progress)
                     const isCurrent = activeDay?.id === day.id
@@ -401,9 +431,9 @@ function Tracker() {
                     )
                   })}
                 </div>
-                {displayedDay && selectedDayId && (
+                {displayedDay && (
                   <aside className="curriculum-preview">
-                    <div className="preview-topline"><span className="level-tag">L1 · WEEK {displayedDay.weekNumber}</span></div>
+                    <div className="preview-topline"><span className="level-tag">L{displayedDay.level} · WEEK {displayedDay.weekNumber}</span></div>
                     <h2>{displayedDay.title}</h2>
                     <p className="preview-day">Day {displayedDay.dayNumber} · Scheduled {formatDate(getScheduledDate(progress.startDate, displayedIndex), { month: 'long', day: 'numeric' })}</p>
                     <div className="preview-source">{sourcePath}</div>

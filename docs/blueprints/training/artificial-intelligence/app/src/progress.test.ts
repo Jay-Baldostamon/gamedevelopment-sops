@@ -12,6 +12,7 @@ const storageKey = 'weekday-training-todo-v1'
 const previousLengths = [8, 7, 8, 7, 9, 10, 6, 6, 9, 8, 8, 12, 6, 8, 12, 3, 3, 3, 5, 7]
 const day5: TrainingDay = {
   id: 'l1-1-5-shared',
+  level: 1,
   weekNumber: 1,
   dayNumber: 5,
   title: 'Code Literacy',

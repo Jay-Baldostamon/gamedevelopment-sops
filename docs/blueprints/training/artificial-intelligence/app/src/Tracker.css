@@ -43,6 +43,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .level-name strong { color: #293a31; font-family: var(--mono); font-size: 11px; }
 .level-name small { color: #7b867e; font-size: 11px; }
 .level-progress { margin-left: auto; color: #7b867e; font-family: var(--mono); font-size: 10px; }
+.level-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: -4px 0 14px; }
+.level-tab { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 11px; color: #5b665e; background: #eef2ec; border: 1px solid #dfe5dc; border-radius: 999px; font-size: 11px; cursor: pointer; }
+.level-tab strong { color: #42684e; font-family: var(--mono); font-size: 10px; }
+.level-tab:hover { background: #e6ebe3; }
+.level-tab.active { color: #244b3c; background: #e5eee5; border-color: #c9dccd; }
 .sidebar-bottom { margin-top: auto; padding: 15px 9px 0; border-top: 1px solid #dce3db; }
 .start-date-label { display: block; margin-bottom: 7px; }
 .date-input { width: 100%; height: 36px; padding: 0 9px; color: #35473d; background: #fbfcf9; border: 1px solid #d7dfd6; border-radius: 6px; font: 12px var(--mono); }
@@ -158,7 +163,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 .curriculum-heading { align-items: center; }
 .curriculum-heading h1 span { color: #789080; font-weight: 500; }
-.level-completion { justify-items: end; }
+.level-completion { justify-items: end; flex: 0 0 auto; white-space: nowrap; }
 .level-completion strong { color: #244b3c; font-family: var(--mono); font-size: 22px; }
 .level-completion strong small { color: #98a198; font-size: 13px; font-weight: 400; }
 .curriculum-layout { display: grid; grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.15fr); align-items: start; gap: 14px; }
@@ -249,4 +254,5 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   .level-completion { margin-top: 19px; }
   .curriculum-row { grid-template-columns: 25px minmax(0, 1fr) auto 13px; gap: 6px; padding-inline: 7px; }
   .curriculum-row-date { font-size: 7px; }
+  .level-tab { min-height: 27px; padding: 0 9px; font-size: 10px; }
 }
