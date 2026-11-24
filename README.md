@@ -4,6 +4,8 @@ The Level 1 training tracker for the studio's Unity game-development path, publi
 
 **https://jay-baldastamon.github.io/gamedevelopment-sops/**
 
+Reference repository: **https://github.com/hurdman/engineering-sops**
+
 ## What this repository contains
 
 Everything tracked here either builds the tracker or deploys it. There is no separate documentation tree.
