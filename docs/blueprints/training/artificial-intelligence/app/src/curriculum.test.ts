@@ -2,16 +2,6 @@ import { describe, expect, it } from 'vitest'
 import { curriculumFiles, parseActiveL1 } from './curriculum'
 import activePlan from '../../Tools-Only 80-Day Learning Plan.md?raw'
 
-const l1References = import.meta.glob<string>('../../L1/**/*.md', {
-  eager: true,
-  query: '?raw',
-  import: 'default',
-})
-
-const planAnchors = [...activePlan.matchAll(/^#{2,4} (.+)$/gm)].map((match) =>
-  match[1].toLowerCase().replace(/[^\p{L}\p{N}_\- ]/gu, '').replaceAll(' ', '-'),
-)
-
 describe('L1 curriculum index', () => {
   it('indexes exactly the 20 active L1 days in week order', () => {
     expect(curriculumFiles).toHaveLength(20)
@@ -36,7 +26,7 @@ describe('L1 curriculum index', () => {
       expect(day.title).toBe(lesson?.title)
       expect(day.content).toBe(lesson?.content)
       expect(day.checklist).toEqual(lesson?.checklist)
-      expect(day.checklist).toHaveLength(1)
+      expect(day.checklist.length).toBeGreaterThan(0)
       expect(day.content).not.toContain('### L1 entry expectations')
       expect(day.content).not.toContain('### Approved tools and boundaries')
       expect(day.content).not.toContain('Retired lesson')
@@ -45,9 +35,10 @@ describe('L1 curriculum index', () => {
   })
 
   it('uses the current plan headings as day titles', () => {
-    expect(curriculumFiles[17].title).toBe('Challenge the level and ending design')
-    expect(curriculumFiles[18].content).toContain('Implement Task B')
-    expect(curriculumFiles[19].content).toContain('before claiming the two-task outcome')
+    expect(curriculumFiles[17].title).toBe('Review 2 and the QA pass')
+    expect(curriculumFiles[17].content).toContain('QA checklist')
+    expect(curriculumFiles[18].content).toContain('problem statement')
+    expect(curriculumFiles[19].content).toContain('retrospective')
   })
 
   it('rejects malformed active L1 sections instead of using legacy lessons', () => {
@@ -59,7 +50,7 @@ describe('L1 curriculum index', () => {
       activePlan.replace('#### Day 2 —', '#### Day 3 —'),
       activePlan.replace('### Entry expectations and safe practice', '### Missing entry'),
       activePlan.replace('## Approved Tools and Boundaries', '## Missing tools'),
-      activePlan.replace(/^- \[ \] .+\r?\n/m, ''),
+      activePlan.replace(/(#### Day 3 —[\s\S]*?)(?=#### Day 4)/, (day) => day.replace(/^- \[ \].*$/gm, '')),
       activePlan.replace('### Week 2 —', '#### Week 2 —'),
     ]
     for (const invalid of invalidPlans) expect(() => parseActiveL1(invalid)).toThrow()
@@ -68,30 +59,24 @@ describe('L1 curriculum index', () => {
 
   it('keeps active L1 lessons task-only while preserving scope and recovery practice', () => {
     const active = parseActiveL1(activePlan)
-    expect(active.get(1)?.content).toContain('one-page game-design brief')
-    expect(active.get(6)?.content).toContain('camera script')
-    expect(active.get(7)?.content).toContain('Level complete')
-    expect(active.get(8)?.content).toContain('variable jump height')
-    expect(active.get(9)?.content).toContain('out-of-scope')
-    expect(active.get(10)?.content).toContain('verified no-code solution is valid')
-    expect(active.get(11)?.content).toContain('spike trigger script')
-    expect(active.get(20)?.content).toContain('Reuse one effective prompt')
+    expect(active.get(1)?.content).toContain('five separate chats')
+    expect(active.get(2)?.content).toContain('eight prompt cycles')
+    expect(active.get(3)?.content).toContain('one-page pitch')
+    expect(active.get(4)?.content).toContain('click-by-click steps')
+    expect(active.get(5)?.content).toContain('50\u2013100 line section')
+    expect(active.get(6)?.content).toContain('Force Text')
+    expect(active.get(7)?.content).toContain('feature/day7-upgrade-N')
+    expect(active.get(8)?.content).toContain('Must-Have')
+    expect(active.get(9)?.content).toContain('ScriptableObject')
+    expect(active.get(10)?.content).toContain('Restore both files from Git')
+    expect(active.get(12)?.content).toContain('Game Shell Ticket')
+    expect(active.get(20)?.content).toContain('post-launch list')
+    expect(active.get(5)?.checklist.length).toBe(8)
+    expect(active.get(10)?.checklist.length).toBe(9)
     for (const lesson of active.values()) {
       expect(lesson.content).not.toContain('### L1 entry expectations')
       expect(lesson.content).not.toContain('### AI collaboration habit')
       expect(lesson.content).not.toContain('### Approved tools and boundaries')
-    }
-  })
-
-  it('marks all legacy L1 material as retired with valid active-plan anchors', () => {
-    expect(Object.keys(l1References)).toHaveLength(27)
-    for (const [path, content] of Object.entries(l1References)) {
-      expect(content, path).toMatch(/^> \*\*Retired (lesson|overview|reference):\*\*/m)
-      expect(content, path).toMatch(/^\| Status\s*\| archived\s*\|$/m)
-      expect(content, path).not.toMatch(/^\| Status\s*\| active\s*\|$/m)
-      const href = content.match(/\[active L1[^]*?\]\(([^)]+)\)/)?.[1]
-      if (!href) throw new Error(`Missing active L1 link in ${path}`)
-      expect(planAnchors, path).toContain(href.split('#')[1])
     }
   })
 })

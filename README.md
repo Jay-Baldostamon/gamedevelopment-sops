@@ -1,73 +1,56 @@
 # gamedevelopment-sops
 
-Version-controlled operating knowledge for a game development studio.
+The Level 1 training tracker for the studio's Unity game-development path, published as a static site:
 
-This repository is the home for how we build and ship games: production playbooks, engine and content pipeline standards, quality gates, live-ops runbooks, and the career ladders for every discipline. It replaces scattered Google Docs with a single GitHub source of truth so documentation can be versioned, reviewed, searched, and reused with AI-assisted workflows.
+**https://jay-baldastamon.github.io/gamedevelopment-sops/**
 
-## Inspiration
+## What this repository contains
 
-This repository is inspired by, and a game-development adaptation of, [hurdman/engineering-sops](https://github.com/hurdman/engineering-sops). Its shape — playbooks, blueprints, career ladders, value engines, and schemas — comes from that repository and is retargeted to game production, where milestones, engine and content pipelines, playtesting, and live operations set the rhythm of the work.
+Everything tracked here either builds the tracker or deploys it. There is no separate documentation tree.
 
-## What belongs here
+| Path | Purpose |
+| --- | --- |
+| `docs/blueprints/training/artificial-intelligence/app/` | Vite + React + TypeScript source for the tracker: views, progress state, tests, configs, and static assets |
+| `docs/blueprints/training/artificial-intelligence/Tools-Only 80-Day Learning Plan.md` | The active curriculum. The app imports this file at build time and parses its Level 1 section |
+| `.github/workflows/pages.yml` | Tests, lints, builds, and deploys the tracker to GitHub Pages on every push to `main` |
+| `README.md`, `.gitignore` | Repository documentation and ignore rules |
 
-Use this repo for any game development documentation that should be kept current and discoverable, including:
+## Where the content comes from
 
-- production operating procedures and playbooks (concept to launch to live ops),
-- engine, systems, and content pipeline architecture standards,
-- quality assurance, playtest, and progressive quality gate definitions,
-- build, release, and platform certification processes,
-- live-ops runbooks, incident response, and risk acceptance records,
-- discipline career ladders, role expectations, and promotion criteria,
-- review notes, prompts, schemas, and reusable templates,
-- other internal documentation that needs durable version control.
+The tracker renders only Level 1: Days 1–20 of the learning plan.
 
-## Repository Layout
+- `app/src/curriculum.ts` imports the plan with `?raw` and parses it; nothing is duplicated in TypeScript.
+- Day titles, lesson bodies, prerequisites, and per-day checklists all come from that Markdown file.
+- The plan must keep exactly one `## Level 1` section containing one `### Week n` heading per week and one `#### Day n — Title` block per day, ordered 1-20 and placed in their numbered weeks. Missing, duplicate, unordered, misplaced, or incomplete lessons fail the build and the test suite explicitly.
+- Two views consume that content: **Today** (the scheduled day, with previous/next paging and carryover) and **Curriculum** (the full L1 list).
+- Progress — completed checklist items, dates, notes, and reviews — is stored in the browser under the `weekday-training-todo-v1` key. There is no backend, so the site is static and nothing is sent anywhere.
 
-- `docs/architecture/` - engine, backend, frontend, and data schema standards
-- `docs/blueprints/` - multi-month training and enablement programs per discipline (backend, QA gates, engineering training)
-- `docs/career-ladder/` - discipline progression, role expectations, and promotion gates (backend, frontend, AI)
-- `docs/incident-response/` - dated incident assessments, retrospectives, risk acceptance, and response records
-- `docs/operations/` - operational tracking data such as training progress
-- `docs/playbooks/` - studio playbooks for AI enablement, data, delivery and quality, governance, incidents, people operations, planning and reporting, platform infrastructure, and QA
-- `docs/state-of-engineering/` - periodic studio health and capability reports
-- `docs/value-engines/` - operational frameworks describing how each part of the studio creates player value
-- `archive/` - retired playbooks kept for historical reference
-- `schemas/` - structured document schemas for blueprints, career ladders, playbooks, and issue templates
-- `scripts/` - helper automation such as worktree provisioning
-- `resources/images/` - screenshots and figures referenced by the documents
+To change what learners see, edit the plan Markdown, not the app.
 
-## Website
+## Local development
 
-The published site is the Level 1 training tracker: **https://jay-baldostamon.github.io/gamedevelopment-sops/**.
+From `docs/blueprints/training/artificial-intelligence/app`:
 
-- The tracker is built from `docs/blueprints/training/artificial-intelligence/app` and served at the site root.
-- Pushing to `main` runs `.github/workflows/pages.yml`, which tests, lints, builds, and deploys the tracker to GitHub Pages.
-- The documentation remains versioned Markdown in this repository; it is not part of the published site.
-- Local validation: `cd docs/blueprints/training/artificial-intelligence/app`, then `npm ci`, `npm test`, `npm run lint`, and `npm run build`.
+```bash
+npm ci
+npm run dev      # local dev server
+npm test         # curriculum, progress, and scheduler suites
+npm run lint     # oxlint
+npm run build    # type-check and production build into dist/
+npm run preview  # serve the production build
+```
 
-## Why GitHub Instead of Google Docs
+## Deployment
 
-- Clear version history for specs that outlive a milestone
-- Pull request review before a process or standard goes studio-wide
-- Easier collaboration across art, design, engineering, QA, and production
-- Better searchability and reuse across projects and teams
-- Stronger support for AI-assisted drafting, review, and maintenance
+Pushing to `main` triggers `.github/workflows/pages.yml`, which runs `npm ci`, `npm test`, `npm run lint`, and `npm run build` in the app directory, then publishes `app/dist` to GitHub Pages. The Vite `base` is relative, so the build stays portable under the Pages URL. The workflow can also be dispatched manually.
 
-## Working In This Repository
+## Working in this repository
 
-- Keep documents in Markdown unless a different format is clearly required.
-- Prefer small, focused updates over large unreviewed rewrites.
-- Treat important documentation like code: make changes through branches and pull requests when applicable.
-- Keep content current, concise, and easy to scan.
-- Name playbooks, gates, and ladder entries after the discipline they govern so they stay discoverable.
+- Keep the site self-contained under `app/`. The plan Markdown is the only file outside it that the build reads.
+- `node_modules/`, `dist/`, and log files are gitignored — never commit build output or dependencies.
+- Put tests beside the code they cover as `src/*.test.ts`; the Vitest config only collects that pattern.
+- Make changes through branches and pull requests, and confirm `npm test`, `npm run lint`, and `npm run build` pass before merging.
 
-## Suggested Contribution Flow
+## Note for learners
 
-1. Find the most relevant document or folder.
-2. Update the content in a focused commit or pull request.
-3. Review the change for accuracy, clarity, and consistency.
-4. Link related documents when a topic spans multiple areas.
-
-## Maintenance
-
-If a document becomes stale, duplicate, or difficult to find, update this repository rather than creating a new Google Doc. When a process no longer reflects how we make games, retire it into `archive/` instead of deleting the history.
+The tracker is a maintainer and review surface, not part of the active learning path. Running it requires software outside the training allowance; the Markdown plan is the sole active curriculum.

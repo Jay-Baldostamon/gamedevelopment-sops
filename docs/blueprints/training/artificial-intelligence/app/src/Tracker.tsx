@@ -5,6 +5,7 @@ import {
   BookOpen,
   CalendarDays,
   Check,
+  ChevronLeft,
   ChevronRight,
   Clock3,
   Layers3,
@@ -51,6 +52,7 @@ function Tracker() {
   const [storageError, setStorageError] = useState<string | null>(initialProgress.error)
   const [view, setView] = useState<'today' | 'curriculum'>('today')
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null)
+  const [todayIndex, setTodayIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (storageError) return
@@ -74,10 +76,14 @@ function Tracker() {
     days.length,
   )
   const activeDay = activeIndex === null ? null : days[activeIndex]
+  const browsingToday = todayIndex !== null
+  const todayPosition = Math.min(Math.max(todayIndex ?? activeIndex ?? 0, 0), days.length - 1)
+  const todayDay = days[todayPosition]
+  const showTodayDay = todayDay != null && (!trackComplete || browsingToday)
   const selectedDay = selectedDayId ? days.find((day) => day.id === selectedDayId) : undefined
-  const displayedDay = selectedDay ?? activeDay
+  const displayedDay = view === 'today' ? (showTodayDay ? todayDay : null) : (selectedDay ?? activeDay)
   const displayedIndex = displayedDay ? days.indexOf(displayedDay) : -1
-  const isActionable = !storageError && displayedDay != null && displayedDay.id === activeDay?.id
+  const isActionable = !storageError && displayedDay != null
   const checklist = displayedDay?.checklist ?? []
   const taskCount = Math.max(checklist.length, 1)
   const checkedTasks = displayedDay
@@ -91,8 +97,17 @@ function Tracker() {
     getActiveIndex(progress.startDate, localDateString(), days.length, days.length) ?? 0,
     0,
   )
-  const upcoming = activeIndex === null ? [] : days.slice(activeIndex + 1, activeIndex + 6)
+  const upcoming = displayedIndex < 0 ? [] : days.slice(displayedIndex + 1, displayedIndex + 6)
   const sourcePath = displayedDay?.sourcePath ?? ''
+  const scheduleState = activeIndex === null
+    ? null
+    : todayPosition < activeIndex
+      ? 'earlier'
+      : todayPosition > activeIndex
+        ? 'ahead'
+        : todayPosition < dueIndex
+          ? 'carryover'
+          : null
 
   function updateProgress(change: (current: ProgressState) => ProgressState) {
     if (storageError) return
@@ -102,10 +117,10 @@ function Tracker() {
   function toggleTask(index: number) {
     if (!displayedDay || !isActionable) return
     updateProgress((current) => {
-      const currentChecks = current.checks[displayedDay.id] ?? Array(taskCount).fill(false)
-      const nextChecks = [...currentChecks]
+      const storedChecks = current.checks[displayedDay.id] ?? []
+      const nextChecks = Array.from({ length: taskCount }, (_, taskIndex) => storedChecks[taskIndex] === true)
       nextChecks[index] = !nextChecks[index]
-      const completed = nextChecks.length >= taskCount && nextChecks.slice(0, taskCount).every(Boolean)
+      const completed = nextChecks.every(Boolean)
       return {
         ...current,
         checks: { ...current.checks, [displayedDay.id]: nextChecks },
@@ -132,6 +147,11 @@ function Tracker() {
     setView('curriculum')
   }
 
+  function shiftTodayDay(offset: number) {
+    const from = todayIndex ?? activeIndex ?? 0
+    setTodayIndex(Math.min(Math.max(from + offset, 0), days.length - 1))
+  }
+
   function renderLessonContent(className: string) {
     if (!displayedDay) return null
     return (
@@ -150,7 +170,7 @@ function Tracker() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <a className="brand" href="#today" onClick={() => { setView('today'); setSelectedDayId(null) }}>
+        <a className="brand" href="#today" onClick={() => { setView('today'); setSelectedDayId(null); setTodayIndex(null) }}>
           <span className="brand-mark"><Layers3 size={20} strokeWidth={2.2} /></span>
           <span className="brand-copy">
             <strong>Fieldwork</strong>
@@ -160,7 +180,7 @@ function Tracker() {
 
         <div className="sidebar-label">WORKSPACE</div>
         <nav className="primary-nav" aria-label="Main navigation">
-          <button className={view === 'today' ? 'nav-item active' : 'nav-item'} onClick={() => { setView('today'); setSelectedDayId(null) }}>
+          <button className={view === 'today' ? 'nav-item active' : 'nav-item'} onClick={() => { setView('today'); setSelectedDayId(null); setTodayIndex(null) }}>
             <CalendarDays size={17} />
             <span>Today</span>
             {activeDay && <span className="nav-count">{activeDay.dayNumber}</span>}
@@ -229,19 +249,45 @@ function Tracker() {
                 </div>
               </section>
 
-              {activeDay ? (
+              {showTodayDay ? (
                 <div className="today-grid">
                   <section className="assignment-column">
+                    <div className="day-pager">
+                      <button
+                        className="pager-button"
+                        onClick={() => shiftTodayDay(-1)}
+                        disabled={todayPosition === 0}
+                        title="Go to the previous day"
+                      >
+                        <ChevronLeft size={15} /> Previous
+                      </button>
+                      <span className="pager-position">Day {todayDay.dayNumber} of {days.length}</span>
+                      <button
+                        className="pager-button"
+                        onClick={() => shiftTodayDay(1)}
+                        disabled={todayPosition === days.length - 1}
+                        title="Skip to the next day"
+                      >
+                        Next <ChevronRight size={15} />
+                      </button>
+                      {browsingToday && activeIndex !== null && todayPosition !== activeIndex && (
+                        <button className="pager-button pager-return" onClick={() => setTodayIndex(null)}>
+                          Back to today
+                        </button>
+                      )}
+                    </div>
                     <div className="assignment-meta">
                       <span className="level-tag">L1 · {levelName}</span>
                       <span className="meta-divider">/</span>
-                      <span>Week {activeDay.weekNumber}</span>
+                      <span>Week {todayDay.weekNumber}</span>
                       <span className="meta-divider">/</span>
-                      <span>Day {activeDay.dayNumber}</span>
-                      {(activeIndex ?? 0) < dueIndex && <span className="overdue-tag">CARRYOVER</span>}
+                      <span>Day {todayDay.dayNumber}</span>
+                      {scheduleState === 'carryover' && <span className="overdue-tag">CARRYOVER</span>}
+                      {scheduleState === 'earlier' && <span className="overdue-tag">EARLIER DAY</span>}
+                      {scheduleState === 'ahead' && <span className="ahead-tag">AHEAD OF SCHEDULE</span>}
                     </div>
-                    <h2 className="assignment-title">{activeDay.title}</h2>
-                    <div className="assignment-date"><Clock3 size={14} /> Scheduled {formatDate(getScheduledDate(progress.startDate, activeIndex ?? 0), { month: 'short', day: 'numeric' })}</div>
+                    <h2 className="assignment-title">{todayDay.title}</h2>
+                    <div className="assignment-date"><Clock3 size={14} /> Scheduled {formatDate(getScheduledDate(progress.startDate, todayPosition), { month: 'short', day: 'numeric' })}</div>
 
                     <div className="lesson-panel">
                       <div className="panel-heading">
@@ -291,7 +337,7 @@ function Tracker() {
                       {tasksComplete && (
                         <div className="completion-note"><span className="completion-check"><Check size={14} /></span><span><strong>Day complete</strong><small>Progress is saved in this browser.</small></span></div>
                       )}
-                      {!isActionable && <p className="read-only-hint">{storageError ? 'Resolve the storage error before changing progress.' : 'Only the currently scheduled day can be checked off.'}</p>}
+                      {!isActionable && <p className="read-only-hint">{storageError ? 'Resolve the storage error before changing progress.' : 'This day cannot be edited in this browser.'}</p>}
                     </section>
 
                     <section className="evidence-panel">

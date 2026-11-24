@@ -13,7 +13,7 @@ export interface ProgressState {
 }
 
 const storageKey = 'weekday-training-todo-v1'
-const checklistVersion = 3
+const checklistVersion = 4
 
 export const legacyChecklistIndexes: Record<string, readonly (number | null)[]> = {
   'l1-1-1-shared': [0, 2, 3],
@@ -91,7 +91,8 @@ export function loadProgress(): ProgressState {
     throw new Error('Stored training progress is not an object.')
   }
   const { checklistVersion: version, startDate, checks, legacyChecks, retiredChecks, completed, notes, reviews } = value
-  if (version !== undefined && version !== 1 && version !== 2 && version !== checklistVersion) {
+  const supportedVersions = [1, 2, 3, checklistVersion]
+  if (version !== undefined && (typeof version !== 'number' || !supportedVersions.includes(version))) {
     throw new Error('Stored training progress uses an unsupported checklist version.')
   }
   if (startDate !== undefined && !isValidStartDate(startDate)) {
@@ -145,6 +146,17 @@ export function loadProgress(): ProgressState {
     progress.retiredChecks = { ...progress.retiredChecks }
     for (const dayId of Object.keys(legacyChecklistIndexes)) {
       progress.retiredChecks[dayId] = [...(progress.checks[dayId] ?? [])]
+      delete progress.checks[dayId]
+    }
+    progress.checklistVersion = 3
+  }
+  if (progress.checklistVersion === 3) {
+    progress.checks = { ...progress.checks }
+    progress.retiredChecks = { ...progress.retiredChecks }
+    for (const dayId of Object.keys(legacyChecklistIndexes)) {
+      const previousChecks = progress.checks[dayId]
+      if (!previousChecks?.length) continue
+      if (!Object.hasOwn(progress.retiredChecks, dayId)) progress.retiredChecks[dayId] = [...previousChecks]
       delete progress.checks[dayId]
     }
     progress.checklistVersion = checklistVersion

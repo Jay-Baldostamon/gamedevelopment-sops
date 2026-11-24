@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+﻿import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type TrainingDay } from './curriculum'
 import {
   createInitialProgress,
@@ -64,7 +64,7 @@ describe('legacy checklist migration', () => {
 
     const migrated = loadProgress()
 
-    expect(migrated.checklistVersion).toBe(3)
+    expect(migrated.checklistVersion).toBe(4)
     expect(migrated.startDate).toBe(legacy.startDate)
     expect(migrated).not.toHaveProperty('lane')
     expect(migrated.retiredChecks['l1-1-1-shared']).toEqual([true, true, true])
@@ -142,7 +142,7 @@ describe('legacy checklist migration', () => {
     const invalidStates = [
       '',
       '{broken',
-      JSON.stringify({ checklistVersion: 4 }),
+      JSON.stringify({ checklistVersion: 5 }),
       JSON.stringify({ checks: [] }),
       JSON.stringify({ checks: { day: [true, 'yes'] } }),
       JSON.stringify({ legacyChecks: { day: [null] } }),
@@ -170,7 +170,7 @@ describe('legacy checklist migration', () => {
     }
     localStorage.setItem(storageKey, JSON.stringify(stored))
     const migrated = loadProgress()
-    expect(migrated.checklistVersion).toBe(3)
+    expect(migrated.checklistVersion).toBe(4)
     expect(migrated.checks[day5.id]).toBeUndefined()
     expect(migrated.retiredChecks[day5.id]).toEqual([true, false])
     expect(migrated.completed).toEqual(stored.completed)
@@ -179,6 +179,25 @@ describe('legacy checklist migration', () => {
     expect(migrated.startDate).toBe(stored.startDate)
     saveProgress(migrated)
     expect(loadProgress()).toEqual(migrated)
+  })
+
+  it('archives version 3 checks when the revised L1 checklists arrive', () => {
+    const stored = {
+      ...createInitialProgress(),
+      checklistVersion: 3,
+      checks: { [day5.id]: [true], 'l1-2-6-shared': [true, false, true] },
+      completed: { [day5.id]: true },
+      notes: { [day5.id]: 'Earlier learning' },
+    }
+    localStorage.setItem(storageKey, JSON.stringify(stored))
+    const migrated = loadProgress()
+    expect(migrated.checklistVersion).toBe(4)
+    expect(migrated.checks[day5.id]).toBeUndefined()
+    expect(migrated.checks['l1-2-6-shared']).toBeUndefined()
+    expect(migrated.retiredChecks[day5.id]).toEqual([true])
+    expect(migrated.retiredChecks['l1-2-6-shared']).toEqual([true, false, true])
+    expect(migrated.completed).toEqual(stored.completed)
+    expect(migrated.notes).toEqual(stored.notes)
   })
 
   it('surfaces browser storage write failures', () => {
